@@ -1,248 +1,361 @@
-import { useState, useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Send, Check, ChevronsUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import locationData from "@/data/india-states-districts.json";
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import {
+    Loader2,
+    Upload,
+    X,
+    MapPin,
+    Phone,
+    Mail,
+    MessageSquare,
+} from "lucide-react";
 
+/* -------------------- Schema -------------------- */
+const formSchema = z.object({
+    name: z.string().min(2),
+    phone: z.string().min(10),
+    email: z.string().email().optional().or(z.literal("")),
+    district: z.string().min(1),
+    interestedIn: z.string().min(1),
+    sqft: z.string().optional(),
+    projectDetails: z.string().optional(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+/* -------------------- Component -------------------- */
 const ContactForm = () => {
-    const [formData, setFormData] = useState({
-        name: "",
-        mobile: "",
-        email: "",
-        state: "",
-        city: "",
-        reason: "",
+    const [loading, setLoading] = useState(false);
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+
+    const form = useForm<FormValues>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            name: "",
+            phone: "",
+            email: "",
+            district: "",
+            interestedIn: "",
+            sqft: "",
+            projectDetails: "",
+        },
     });
 
-    const [openState, setOpenState] = useState(false);
-    const [openCity, setOpenCity] = useState(false);
+    /* -------------------- Image handlers -------------------- */
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
 
-    const states = useMemo(() => locationData.states.map(s => s.state), []);
-    const districts = useMemo(() => {
-        const stateObj = locationData.states.find(s => s.state === formData.state);
-        return stateObj ? stateObj.districts : [];
-    }, [formData.state]);
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!formData.state || !formData.city || !formData.reason) {
-            toast.error("Please fill all location and enquiry fields");
+        const files = Array.from(e.target.files);
+        if (imageFiles.length + files.length > 5) {
+            toast.error("Maximum 5 images allowed");
             return;
         }
-
-        const phoneNumber = "918301921926";
-        const message = `*New Lead from Website*\n\n` +
-            `*Name:* ${formData.name}\n` +
-            `*Mobile:* ${formData.mobile}\n` +
-            `*Email:* ${formData.email}\n` +
-            `*Location:* ${formData.city}, ${formData.state}\n` +
-            `*Interested in:* ${formData.reason}`;
-
-        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-
-        toast.success("Redirecting to WhatsApp...");
-        window.open(whatsappUrl, "_blank");
+        setImageFiles((prev) => [...prev, ...files]);
     };
 
-    const inputClasses = "w-full bg-white border border-black/20 p-3 rounded-none outline-none transition-all focus:border-primary font-medium text-sm h-11";
-    const labelClasses = "text-[11px] font-bold text-black uppercase mb-1.5 block tracking-tight";
+    const removeFile = (index: number) => {
+        setImageFiles((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    /* -------------------- Submit -------------------- */
+    const onSubmit = async (values: FormValues) => {
+        try {
+            setLoading(true);
+            const imageUrls: string[] = [];
+
+            for (const file of imageFiles) {
+                const ext = file.name.split(".").pop();
+                const path = `enquiry_attachments/${crypto.randomUUID()}.${ext}`;
+
+                const { error } = await supabase.storage
+                    .from("enquiry-attachments")
+                    .upload(path, file);
+
+                if (!error) {
+                    const { data } = supabase.storage
+                        .from("enquiry-attachments")
+                        .getPublicUrl(path);
+                    imageUrls.push(data.publicUrl);
+                }
+            }
+
+            await supabase.from("enquiries").insert({
+                name: values.name,
+                phone: values.phone,
+                email: values.email || null,
+                district: values.district,
+                interested_in: values.interestedIn,
+                sqft: values.sqft || null,
+                project_details: values.projectDetails || null,
+                image_urls: imageUrls,
+                status: "New",
+            });
+
+            const message = `*New Painting Enquiry*
+Name: ${values.name}
+Phone: ${values.phone}
+Service: ${values.interestedIn}
+District: ${values.district}
+Sq.Ft: ${values.sqft || "N/A"}
+Details: ${values.projectDetails || "N/A"}`;
+
+            window.open(
+                `https://wa.me/918301921926?text=${encodeURIComponent(message)}`,
+                "_blank"
+            );
+
+            toast.success("Enquiry sent successfully!");
+            form.reset();
+            setImageFiles([]);
+        } catch (err: any) {
+            toast.error(err.message || "Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
-        <div className="max-w-4xl mx-auto bg-white p-6 md:p-10 shadow-lg border border-black/5">
-            <div className="text-center mb-10">
-                <h2 className="text-3xl md:text-4xl font-heading font-black text-black leading-tight uppercase mb-3">
-                    Get In <span className="text-primary">Touch</span>
-                </h2>
-                <div className="w-16 h-0.5 bg-primary mx-auto mb-3" />
-                <p className="text-black/60 text-[13px]">Please fill the form below to connect with us on WhatsApp.</p>
-            </div>
+        <section id="contact" className="section-padding bg-accent/10">
+            <div className="container mx-auto px-4">
+                <div className="grid lg:grid-cols-2 gap-16 items-start">
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label className={labelClasses}>Full Name</label>
-                        <input
-                            type="text"
-                            required
-                            placeholder="Full Name"
-                            className={inputClasses}
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        />
-                    </div>
-                    <div>
-                        <label className={labelClasses}>Mobile Number</label>
-                        <input
-                            type="tel"
-                            required
-                            placeholder="Phone Number"
-                            className={inputClasses}
-                            value={formData.mobile}
-                            onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                        />
-                    </div>
-                </div>
+                    {/* LEFT INFO */}
+                    <div className="space-y-10">
+                        <div>
+                            <span className="text-primary text-sm font-bold tracking-widest uppercase">
+                                Contact Us
+                            </span>
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mt-3">
+                                Let’s Talk About <br /> Your Project
+                            </h2>
+                            <p className="text-slate-600 mt-5 max-w-md">
+                                Share your requirements and our painting experts will reach out
+                                with the best solution.
+                            </p>
+                        </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label className={labelClasses}>Email Address</label>
-                        <input
-                            type="email"
-                            required
-                            placeholder="Email Address"
-                            className={inputClasses}
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        />
-                    </div>
-                    <div>
-                        <label className={labelClasses}>Interested in</label>
-                        <div className="relative">
-                            <select
-                                required
-                                className={cn(inputClasses, "appearance-none pr-10 cursor-pointer")}
-                                value={formData.reason}
-                                onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                            >
-                                <option value="" disabled>Select Inquiry Type</option>
-                                <option value="Product Inquiry">Product Inquiry</option>
-                                <option value="Quotation">Request Quotation</option>
-                                <option value="Dealer Search">Find a Dealer</option>
-                                <option value="Other">Other</option>
-                            </select>
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
-                                <ChevronsUpDown className="h-4 w-4" />
-                            </div>
+                        <div className="space-y-6">
+                            {[
+                                {
+                                    icon: MapPin,
+                                    title: "Visit Us",
+                                    value:
+                                        "St. George Shopping Complex, Edathua, Kerala 689573",
+                                },
+                                {
+                                    icon: Phone,
+                                    title: "Call Us",
+                                    value: "+91 830 192 1926",
+                                },
+                                {
+                                    icon: Mail,
+                                    title: "Email",
+                                    value: "kphpaints@gmail.com",
+                                },
+                            ].map((item, i) => (
+                                <div key={i} className="flex gap-5">
+                                    <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                                        <item.icon className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-slate-900">{item.title}</h4>
+                                        <p className="text-slate-600 text-sm">{item.value}</p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="flex flex-col">
-                        <label className={labelClasses}>State</label>
-                        <Popover open={openState} onOpenChange={setOpenState}>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    aria-expanded={openState}
-                                    className={cn(inputClasses, "justify-between text-left font-medium font-normal bg-white hover:bg-white hover:border-black/30")}
-                                >
-                                    <span className={cn(!formData.state && "text-black/40")}>
-                                        {formData.state ? formData.state : "Search State..."}
-                                    </span>
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-white border border-black/10  rounded-none" align="start">
-                                <Command className="rounded-none">
-                                    <CommandInput placeholder="Search State..." className="h-10 text-sm border-none focus:ring-0" />
-                                    <CommandList className="max-h-[300px]">
-                                        <CommandEmpty>No state found.</CommandEmpty>
-                                        <CommandGroup>
-                                            {states.map((state) => (
-                                                <CommandItem
-                                                    key={state}
-                                                    value={state}
-                                                    onSelect={(currentValue) => {
-                                                        const normalizedValue = states.find(s => s.toLowerCase() === currentValue.toLowerCase()) || currentValue;
-                                                        setFormData(prev => ({ ...prev, state: normalizedValue, city: "" }));
-                                                        setOpenState(false);
-                                                    }}
-                                                    className="text-sm cursor-pointer hover:bg-primary/5 rounded-none"
-                                                >
-                                                    <Check
-                                                        className={cn(
-                                                            "mr-2 h-4 w-4",
-                                                            formData.state === state ? "opacity-100" : "opacity-0"
-                                                        )}
-                                                    />
-                                                    {state}
-                                                </CommandItem>
-                                            ))}
-                                        </CommandGroup>
-                                    </CommandList>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-                    <div className="flex flex-col">
-                        <label className={labelClasses}>District / City</label>
-                        <Popover open={openCity} onOpenChange={setOpenCity}>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    aria-expanded={openCity}
-                                    disabled={!formData.state}
-                                    className={cn(inputClasses, "justify-between text-left font-medium font-normal bg-white hover:bg-white hover:border-black/30 disabled:opacity-50 disabled:bg-slate-50")}
-                                >
-                                    <span className={cn(!formData.city && "text-black/40")}>
-                                        {formData.city ? formData.city : formData.state ? "Search District..." : "Select State First"}
-                                    </span>
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-white border border-black/10 shadow-xl rounded-none" align="start">
-                                <Command className="rounded-none">
-                                    <CommandInput placeholder="Search District..." className="h-10 text-sm border-none focus:ring-0" />
-                                    <CommandList className="max-h-[300px]">
-                                        <CommandEmpty>No district found.</CommandEmpty>
-                                        <CommandGroup>
-                                            {districts.map((city) => (
-                                                <CommandItem
-                                                    key={city}
-                                                    value={city}
-                                                    onSelect={(currentValue) => {
-                                                        const normalizedValue = districts.find(d => d.toLowerCase() === currentValue.toLowerCase()) || currentValue;
-                                                        setFormData(prev => ({ ...prev, city: normalizedValue }));
-                                                        setOpenCity(false);
-                                                    }}
-                                                    className="text-sm cursor-pointer hover:bg-primary/5 rounded-none"
-                                                >
-                                                    <Check
-                                                        className={cn(
-                                                            "mr-2 h-4 w-4",
-                                                            formData.city === city ? "opacity-100" : "opacity-0"
-                                                        )}
-                                                    />
-                                                    {city}
-                                                </CommandItem>
-                                            ))}
-                                        </CommandGroup>
-                                    </CommandList>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-                </div>
+                    {/* FORM */}
+                    <div className="bg-white rounded-3xl p-8 md:p-10 shadow-2xl border border-slate-100">
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
 
-                <div className="pt-2">
-                    <Button
-                        type="submit"
-                        className="w-full bg-primary hover:bg-black text-white font-black text-lg py-6 rounded-none transition-all shadow-md uppercase flex items-center justify-center gap-2.5 h-14"
-                    >
-                        SEND ENQUIRY
-                        <Send className="w-4 h-4" />
-                    </Button>
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Name</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} placeholder="Your name" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="phone"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Phone</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} placeholder="+91 XXXXX XXXXX" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="district"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>District</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="Alappuzha">Alappuzha</SelectItem>
+                                                        <SelectItem value="Pathanamthitta">Pathanamthitta</SelectItem>
+                                                        <SelectItem value="Kottayam">Kottayam</SelectItem>
+                                                        <SelectItem value="Other">Other</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="sqft"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Sq. Feet</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} placeholder="Ex: 1200" />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+
+                                <FormField
+                                    control={form.control}
+                                    name="interestedIn"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Service</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="Interior Painting">Interior Painting</SelectItem>
+                                                    <SelectItem value="Exterior Painting">Exterior Painting</SelectItem>
+                                                    <SelectItem value="Waterproofing">Waterproofing</SelectItem>
+                                                    <SelectItem value="Full Home Makeover">Full Home Makeover</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="projectDetails"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Project Details</FormLabel>
+                                            <FormControl>
+                                                <Textarea {...field} placeholder="Tell us about your project" />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {/* Upload */}
+                                <div className="space-y-3">
+                                    <div className="border-2 border-dashed rounded-xl p-4 text-center relative cursor-pointer">
+                                        <input
+                                            type="file"
+                                            multiple
+                                            accept="image/*"
+                                            onChange={handleFileChange}
+                                            className="absolute inset-0 opacity-0"
+                                        />
+                                        <Upload className="mx-auto text-slate-400" />
+                                        <p className="text-xs mt-2 text-slate-500">
+                                            Upload reference images (max 5)
+                                        </p>
+                                    </div>
+
+                                    {/* Image Preview */}
+                                    {imageFiles.length > 0 && (
+                                        <div className="grid grid-cols-4 gap-3">
+                                            {imageFiles.map((file, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="relative group aspect-square rounded-lg overflow-hidden border"
+                                                >
+                                                    <img
+                                                        src={URL.createObjectURL(file)}
+                                                        alt="preview"
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeFile(index)}
+                                                        className="absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
+                                                    >
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <Button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full h-12 text-base font-bold"
+                                >
+                                    {loading ? (
+                                        <Loader2 className="animate-spin w-4 h-4 mr-2" />
+                                    ) : (
+                                        <MessageSquare className="w-4 h-4 mr-2" />
+                                    )}
+                                    Send Enquiry
+                                </Button>
+
+                            </form>
+                        </Form>
+                    </div>
                 </div>
-            </form>
-        </div>
+            </div>
+        </section>
     );
 };
 

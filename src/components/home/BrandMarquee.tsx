@@ -15,7 +15,7 @@ const BrandMarquee = () => {
     const marqueeBrands = [...brands, ...brands, ...brands]; // Triple for smoother long scrolling
 
     return (
-        <div className="py-10 bg-background border-y border-border overflow-hidden relative group">
+        <div className="py-6 bg-background border-y border-border overflow-hidden relative group">
             <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background to-transparent z-10" />
             <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-background to-transparent z-10" />
 
@@ -28,6 +28,7 @@ const BrandMarquee = () => {
                         <img
                             src={brand.logo}
                             alt={brand.name}
+                            loading="lazy"
                             className="h-full w-auto object-contain max-w-[180px]"
                         />
                     </div>

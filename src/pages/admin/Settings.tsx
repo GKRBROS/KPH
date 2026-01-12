@@ -1,119 +1,201 @@
 import AdminLayout from "@/components/admin/AdminLayout";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
-    Settings as SettingsIcon,
-    Palette,
-    Percent,
-    Info,
-    Quote,
-    Save
+    Lock,
+    CheckCircle2,
+    Loader2,
+    Eye,
+    EyeOff
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
 
 const Settings = () => {
-    const brands = [
-        "Asian Paints", "Berger Paints", "Birla Opus", "JSW Paints",
-        "Esdee Paints", "Indigo Paints", "Birla White", "Grass Hopper", "Sheenlac"
-    ];
+    const [loading, setLoading] = useState(false);
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [passwordData, setPasswordData] = useState({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+    });
+
+    const handleChangePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            toast.error("New passwords do not match");
+            return;
+        }
+
+        if (passwordData.newPassword.length < 6) {
+            toast.error("Password must be at least 6 characters");
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user?.email) throw new Error("User not found");
+
+            const { error: signInError } = await supabase.auth.signInWithPassword({
+                email: user.email,
+                password: passwordData.currentPassword
+            });
+
+            if (signInError) {
+                toast.error("Current password is incorrect");
+                return;
+            }
+
+            const { error } = await supabase.auth.updateUser({
+                password: passwordData.newPassword
+            });
+
+            if (error) throw error;
+
+            toast.success("Password updated successfully!");
+            setPasswordData({
+                currentPassword: "",
+                newPassword: "",
+                confirmPassword: ""
+            });
+        } catch (error: any) {
+            const errorMessage = error instanceof Error ? error.message : "Failed to update password";
+            toast.error(errorMessage);
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <AdminLayout>
-            <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                    <h1 className="text-4xl font-black text-slate-900 mb-2 uppercase tracking-tight">
-                        Site <span className="text-primary italic">Settings</span>
+            <div className="max-w-4xl">
+                <div className="mb-8">
+                    <h1 className="text-3xl font-black text-slate-900">
+                        Settings
                     </h1>
-                    <p className="text-slate-500 font-medium">Customize your brand identity and website content.</p>
+                    <p className="text-slate-500 text-sm font-medium mt-2">
+                        Manage your account settings and preferences
+                    </p>
                 </div>
 
-                <Button className="bg-primary hover:bg-black text-white font-bold rounded-xl px-10 py-6 shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
-                    <Save className="w-5 h-5" />
-                    SAVE CHANGES
-                </Button>
-            </div>
-
-            <div className="grid lg:grid-cols-3 gap-8">
-                {/* Left Column: Brand & Pricing */}
-                <div className="lg:col-span-2 flex flex-col gap-8">
-
-                    {/* Brand Management */}
-                    <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-elegant">
-                        <h2 className="text-xl font-black text-slate-900 uppercase mb-6 flex items-center gap-3">
-                            <Palette className="w-6 h-6 text-primary" />
-                            Brand Management
-                        </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {brands.map((brand) => (
-                                <div key={brand} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm">
-                                    <span className="font-bold text-slate-700 text-sm">{brand}</span>
-                                    <Switch defaultChecked className="data-[state=checked]:bg-primary" />
-                                </div>
-                            ))}
+                {/* Password Change Section */}
+                <Card className="p-8 bg-white border-2 border-slate-200 shadow-sm">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <Lock className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-black text-slate-900">Change Password</h2>
+                            <p className="text-sm text-slate-500">Update your account password</p>
                         </div>
                     </div>
 
-                    {/* Pricing & Discounts */}
-                    <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-elegant">
-                        <h2 className="text-xl font-black text-slate-900 uppercase mb-6 flex items-center gap-3">
-                            <Percent className="w-6 h-6 text-primary" />
-                            Pricing & Discounts
-                        </h2>
-                        <div className="grid sm:grid-cols-2 gap-8">
-                            <div className="flex flex-col gap-2">
-                                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Current Discount (%)</label>
+                    <form onSubmit={handleChangePassword} className="space-y-6">
+                        <div className="grid md:grid-cols-3 gap-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="current-password" className="text-xs font-black uppercase text-slate-400 tracking-wider">
+                                    Current Password
+                                </Label>
                                 <div className="relative">
-                                    <Percent className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
-                                    <Input type="number" defaultValue="20" className="h-14 pl-12 rounded-2xl border-slate-100 bg-slate-50 font-black text-lg focus:ring-primary" />
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                    <Input
+                                        id="current-password"
+                                        type={showCurrentPassword ? "text" : "password"}
+                                        value={passwordData.currentPassword}
+                                        onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                                        placeholder="••••••••"
+                                        required
+                                        className="h-12 pl-12 pr-12 rounded-xl border-slate-200 focus:border-primary transition-colors"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                                    >
+                                        {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    </button>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Offer Label</label>
-                                <Input defaultValue="Limited Time Offer" className="h-14 rounded-2xl border-slate-100 bg-slate-50 font-bold focus:ring-primary px-6" />
+
+                            <div className="space-y-2">
+                                <Label htmlFor="new-password" className="text-xs font-black uppercase text-slate-400 tracking-wider">
+                                    New Password
+                                </Label>
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                    <Input
+                                        id="new-password"
+                                        type={showNewPassword ? "text" : "password"}
+                                        value={passwordData.newPassword}
+                                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                                        placeholder="••••••••"
+                                        required
+                                        className="h-12 pl-12 pr-12 rounded-xl border-slate-200 focus:border-primary transition-colors"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowNewPassword(!showNewPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                                    >
+                                        {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="confirm-new-password" className="text-xs font-black uppercase text-slate-400 tracking-wider">
+                                    Confirm Password
+                                </Label>
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                    <Input
+                                        id="confirm-new-password"
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        value={passwordData.confirmPassword}
+                                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                                        placeholder="••••••••"
+                                        required
+                                        className="h-12 pl-12 pr-12 rounded-xl border-slate-200 focus:border-primary transition-colors"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                                    >
+                                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                {/* Right Column: About & Testimonials */}
-                <div className="flex flex-col gap-8">
-
-                    {/* About KPH */}
-                    <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-elegant">
-                        <h2 className="text-xl font-black text-slate-900 uppercase mb-6 flex items-center gap-3">
-                            <Info className="w-6 h-6 text-primary" />
-                            About Content
-                        </h2>
-                        <div className="flex flex-col gap-4">
-                            <div>
-                                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2 mb-2 block">Tagline</label>
-                                <Input defaultValue="Quality That Speaks" className="h-12 rounded-xl border-slate-100 bg-slate-50 font-bold" />
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2 mb-2 block">Main Description</label>
-                                <Textarea
-                                    className="min-h-[150px] rounded-2xl border-slate-100 bg-slate-50 font-medium text-sm leading-relaxed"
-                                    defaultValue="Located in the heart of Edathua, we are your one-stop destination for all branded paint solutions..."
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Testimonial Placeholder */}
-                    <div className="bg-slate-900 p-8 rounded-[40px] shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] group-hover:bg-primary/40 transition-all duration-500" />
-                        <h2 className="text-xl font-black text-white uppercase mb-6 flex items-center gap-3 relative z-10">
-                            <Quote className="w-6 h-6 text-primary" />
-                            Testimonials
-                        </h2>
-                        <p className="text-slate-400 text-xs font-bold leading-relaxed mb-6">You have 12 published testimonials. Manage visibility and reviews here.</p>
-                        <Button className="w-full bg-white text-slate-900 font-bold py-6 rounded-xl hover:bg-primary hover:text-white transition-all uppercase text-[10px] tracking-widest">
-                            Manage Reviews
+                        <Button
+                            type="submit"
+                            disabled={loading}
+                            className="bg-primary hover:bg-red-700 text-white font-black rounded-xl shadow-lg shadow-red-100 transition-all uppercase tracking-wider"
+                        >
+                            {loading ? (
+                                <>
+                                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                    Updating...
+                                </>
+                            ) : (
+                                <>
+                                    <CheckCircle2 className="w-5 h-5 mr-2" />
+                                    Update Password
+                                </>
+                            )}
                         </Button>
-                    </div>
-
-                </div>
+                    </form>
+                </Card>
             </div>
         </AdminLayout>
     );

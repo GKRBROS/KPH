@@ -10,7 +10,13 @@ import CTASection from "@/components/home/CTASection";
 import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
 
 
+import { useEffect } from "react";
+
 const Index = () => {
+  useEffect(() => {
+    document.title = "Kalangara Paint House | Premium Paints & Design in Alappuzha";
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       {/* SEO: Single H1 in HeroSection, proper heading hierarchy throughout */}

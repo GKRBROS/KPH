@@ -18,6 +18,9 @@ export type Database = {
           state: string | null
           district: string | null
           interested_in: string | null
+          sqft: string | null
+          project_details: string | null
+          image_urls: string[] | null
           status: string
           created_at: string
           updated_at: string
@@ -30,6 +33,9 @@ export type Database = {
           state?: string | null
           district?: string | null
           interested_in?: string | null
+          sqft?: string | null
+          project_details?: string | null
+          image_urls?: string[] | null
           status?: string
           created_at?: string
           updated_at?: string
@@ -42,6 +48,9 @@ export type Database = {
           state?: string | null
           district?: string | null
           interested_in?: string | null
+          sqft?: string | null
+          project_details?: string | null
+          image_urls?: string[] | null
           status?: string
           created_at?: string
           updated_at?: string
@@ -91,6 +100,10 @@ export type Database = {
           role: string
           phone: string | null
           status: string
+          employee_image: string | null
+          joining_date: string | null
+          resigning_date: string | null
+          address: string | null
           created_at: string
           updated_at: string
         }
@@ -100,6 +113,10 @@ export type Database = {
           role: string
           phone?: string | null
           status?: string
+          employee_image?: string | null
+          joining_date?: string | null
+          resigning_date?: string | null
+          address?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -109,6 +126,40 @@ export type Database = {
           role?: string
           phone?: string | null
           status?: string
+          employee_image?: string | null
+          joining_date?: string | null
+          resigning_date?: string | null
+          address?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          id: string
+          title: string
+          location: string
+          category: string
+          cover_image_url: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          location: string
+          category: string
+          cover_image_url: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          location?: string
+          category?: string
+          cover_image_url?: string
           created_at?: string
           updated_at?: string
         }

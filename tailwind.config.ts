@@ -8,15 +8,19 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: "1rem",
+        sm: "2rem",
+      },
       screens: {
         "2xl": "1400px",
       },
     },
     extend: {
       fontFamily: {
-        heading: ['Poppins', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
         body: ['Inter', 'sans-serif'],
+        hero: ['Montserrat', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
