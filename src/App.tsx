@@ -17,7 +17,7 @@ const WorkerTracking = lazy(() => import("./pages/admin/WorkerTracking"));
 const EnquiryManagement = lazy(() => import("./pages/admin/EnquiryManagement"));
 const Settings = lazy(() => import("./pages/admin/Settings"));
 const ResetPassword = lazy(() => import("./pages/admin/ResetPassword"));
-const ReviewsManagement = lazy(() => import("./pages/admin/ReviewsManagement"));
+
 
 const AllWorks = lazy(() => import("./pages/AllWorks"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -83,14 +83,7 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/admin/reviews"
-              element={
-                <ProtectedRoute>
-                  <ReviewsManagement />
-                </ProtectedRoute>
-              }
-            />
+
             <Route path="/admin/reset-password" element={<ResetPassword />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

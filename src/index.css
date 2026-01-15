@@ -4,6 +4,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Performance optimizations */
+img {
+  content-visibility: auto;
+  contain-intrinsic-size: 800px 600px;
+}
+
+/* GPU acceleration for smooth animations */
+.parallax-layer,
+.animate-float,
+.animate-slide-up {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize reflows */
+.layout-shift-guard {
+  contain: layout style paint;
+}
+
+/* Smooth scrolling with performance */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+/* Reduce paint on scroll */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* KPH Brand Refresh - Deep Red, Charcoal, Gold */
 
 @layer base {
@@ -113,16 +151,14 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px;
   }
 
   body {
     @apply bg-background text-foreground font-body antialiased;
+    font-display: swap;
   }
 
   h1,

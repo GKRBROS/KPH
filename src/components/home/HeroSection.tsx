@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
@@ -64,23 +64,26 @@ const HeroSection = () => {
     }
   ];
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({
-        x: (e.clientX / window.innerWidth - 0.5) * 30,
-        y: (e.clientY / window.innerHeight - 0.5) * 30,
-      });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    setMousePos({
+      x: (e.clientX / window.innerWidth - 0.5) * 30,
+      y: (e.clientY / window.innerHeight - 0.5) * 30,
+    });
   }, []);
 
   useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [handleMouseMove]);
+
+  const optimizedSlides = useMemo(() => slides.slice(0, 6), []); // Limit to 6 slides for performance
+
+  useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setCurrentSlide((prev) => (prev + 1) % optimizedSlides.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, [slides.length]);
+  }, [optimizedSlides.length]);
 
   return (
     <section id="hero" className="relative min-h-[90vh] lg:min-h-[95vh] flex flex-col lg:flex-row items-center overflow-hidden bg-white pt-24 lg:pt-20">
@@ -139,7 +142,7 @@ const HeroSection = () => {
 
           {/* Carousel Images with Fixed Size */}
           <div className="relative z-20 w-[260px] h-[260px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] flex items-center justify-center pointer-events-none">
-            {slides.map((slide, index) => (
+            {optimizedSlides.map((slide, index) => (
               <div
                 key={index}
                 className={`absolute transition-all duration-1000 ease-in-out flex items-center justify-center ${index === currentSlide
@@ -168,7 +171,7 @@ const HeroSection = () => {
 
           {/* Pagination Indicators - Compact Version */}
           <div className="absolute bottom-0 lg:bottom-[10%] right-0 left-0 lg:left-auto lg:right-[10%] z-30 flex justify-center lg:justify-end gap-2 px-4">
-            {slides.map((_, i) => (
+            {optimizedSlides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrentSlide(i)}

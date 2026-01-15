@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { GalleryCarousel } from "./GalleryCarousel";
@@ -20,7 +20,8 @@ const GallerySection = () => {
             const { data, error } = await supabase
                 .from('projects')
                 .select('*, work_images(*)')
-                .order('created_at', { ascending: false });
+                .order('created_at', { ascending: false })
+                .limit(6); // Limit to 6 for better performance
 
             if (error) {
                 console.error("Error fetching projects:", error);
@@ -36,6 +37,10 @@ const GallerySection = () => {
             setLoading(false);
         }
     };
+
+    const optimizedProjects = useMemo(() => {
+        return projects.slice(0, 6); // Ensure we only show 6 projects
+    }, [projects]);
 
     if (loading) {
         return (
@@ -72,7 +77,7 @@ const GallerySection = () => {
                     </Button>
                 </div>
 
-                <GalleryCarousel projects={projects} />
+                <GalleryCarousel projects={optimizedProjects} />
 
                 <div className="mt-8 text-center md:hidden">
                     <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white transition-colors rounded-full px-6 w-full">
