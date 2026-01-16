@@ -19,7 +19,7 @@ const Footer = () => {
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-3xl font-black tracking-tighter uppercase leading-none">The Paint House</span>
-                                <span className="text-[10px] font-bold tracking-[0.4em] text-slate-500 uppercase">Since 1995 • Edathua</span>
+                                <span className="text-[10px] font-bold tracking-[0.4em] text-slate-500 uppercase">Edathua</span>
                             </div>
                         </div>
                         <h2 className="text-4xl md:text-5xl lg:text-7xl font-heading font-black tracking-tighter text-white uppercase leading-[0.9]">

@@ -69,7 +69,7 @@ const VideoSection = () => {
 
                         {/* Side Branding */}
                         <div className="absolute left-4 top-1/2 -translate-y-1/2 vertical-text">
-                            <span className="text-[8px] font-black text-white/10 uppercase tracking-[0.8em]">QUALTIY SINCE 1995</span>
+                            <span className="text-[8px] font-black text-white/10 uppercase tracking-[0.8em]">PREMIUM QUALITY</span>
                         </div>
                     </div>
 

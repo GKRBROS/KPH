@@ -59,7 +59,7 @@ const WhyUsSection = () => {
 
             <div className="flex gap-4 pt-4">
               <div className="h-px flex-1 bg-gradient-to-r from-indigo-500/50 to-transparent self-center"></div>
-              <span className="text-xs uppercase tracking-[0.3em] text-slate-500 font-semibold">SINCE 1995</span>
+              <span className="text-xs uppercase tracking-[0.3em] text-slate-500 font-semibold">ESTABLISHED</span>
             </div>
           </div>
 
