@@ -20,8 +20,8 @@ const Header = ({ forceWhite = false }: HeaderProps) => {
 
   const navLinks = [
     { name: "Home", href: "#hero" },
-    { name: "About", href: "#about" },
     { name: "Services", href: "#services" },
+    { name: "About", href: "#about" },
     { name: "Showroom", href: "#showroom" },
     { name: "Gallery", href: "#gallery" },
     { name: "Contact", href: "#contact" },
@@ -56,11 +56,11 @@ const Header = ({ forceWhite = false }: HeaderProps) => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-slate-100 bg-white ${isScrolled ? "py-1 shadow-md" : "py-2 shadow-sm"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-slate-100 bg-white ${isScrolled ? "py-2 md:py-1 shadow-md" : "py-3 md:py-2 shadow-sm"
         }`}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-8">
+      <div className="container mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-2 sm:gap-4 md:gap-8">
 
           {/* Brand / Logo */}
           <div className="flex-shrink-0">
@@ -69,7 +69,7 @@ const Header = ({ forceWhite = false }: HeaderProps) => {
               onClick={(e) => handleNavClick(e, '#hero')}
               className="flex items-center group cursor-pointer"
             >
-              <div className="relative w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-transform group-hover:scale-105">
+              <div className="relative w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center transition-transform group-hover:scale-105">
                 <img
                   src="/icons/icon.png"
                   alt="KPH Logo"
@@ -113,43 +113,56 @@ const Header = ({ forceWhite = false }: HeaderProps) => {
               onClick={handleContactClick}
               className="hidden sm:flex rounded-none px-6 py-4 h-10 text-[10px] font-extrabold uppercase tracking-[0.2em] transition-all bg-foreground text-white hover:bg-primary shadow-sm"
             >
-              ENQUIRE
+              ENQUIRE NOW
             </Button>
 
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded bg-slate-100 text-foreground"
+              className="lg:hidden p-2.5 rounded bg-slate-100 text-foreground hover:bg-slate-200 active:scale-95 transition-all"
+              aria-label="Toggle menu"
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
       </div>
 
       {/* Mobile Navigation Drawer */}
-      <div className={`lg:hidden fixed inset-x-0 top-[calc(100%-1px)] bg-white border-t border-slate-100 shadow-2xl transition-all duration-500 overflow-hidden ${isMobileMenuOpen ? "max-h-[85vh] opacity-100" : "max-h-0 opacity-0"
-        }`}>
-        <div className="p-4 space-y-1">
+      <div
+        className={`lg:hidden fixed left-0 right-0 bg-white border-t border-slate-100 shadow-2xl transition-all duration-300 overflow-hidden z-40 ${isMobileMenuOpen ? "max-h-[calc(100vh-60px)] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        style={{ top: isScrolled ? '52px' : '60px' }}
+      >
+        <div className="p-4 space-y-1 max-h-[calc(100vh-80px)] overflow-y-auto">
           {navLinks.map((link, idx) => (
             <a
               key={link.name}
               href={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              className="flex items-center justify-between p-3 rounded-lg bg-slate-50 hover:bg-primary/5 text-foreground font-bold text-[12px] tracking-widest uppercase transition-all"
+              className="flex items-center justify-between p-4 rounded-lg bg-slate-50 hover:bg-primary/5 text-foreground font-bold text-sm tracking-widest uppercase transition-all active:scale-95"
             >
               {link.name}
-              <ChevronRight size={14} className="text-primary" />
+              <ChevronRight size={16} className="text-primary" />
             </a>
           ))}
 
           <div className="pt-3 grid gap-3">
             <Button
               onClick={handleContactClick}
-              className="w-full py-6 text-[11px] font-bold tracking-widest uppercase rounded-none"
+              className="w-full py-6 text-xs font-bold tracking-widest uppercase rounded-none bg-primary hover:bg-primary/90"
             >
               FREE CONSULTATION
             </Button>
+
+            {/* Mobile Phone Number */}
+            <a
+              href="tel:04772212444"
+              className="flex items-center justify-center gap-2 p-4 bg-slate-100 text-foreground rounded-lg hover:bg-slate-200 transition-colors"
+            >
+              <Phone size={16} className="text-primary" />
+              <span className="text-sm font-bold">0477-2212444</span>
+            </a>
           </div>
         </div>
       </div>

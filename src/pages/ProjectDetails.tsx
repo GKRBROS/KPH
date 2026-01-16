@@ -248,7 +248,7 @@ const ProjectDetails = () => {
                                 </div>
 
                                 <Button className="w-full h-14 text-sm font-bold tracking-widest uppercase rounded-none shadow-xl shadow-primary/20 hover:translate-y-[-2px] transition-all bg-primary hover:bg-primary/90" asChild>
-                                    <a href={`https://wa.me/918301921926?text=Hi, I saw the project ${encodeURIComponent(project.title)} and I am interested in similar work.`} target="_blank" rel="noopener noreferrer">
+                                    <a href={`https://wa.me/919446194178?text=Hi, I saw the project ${encodeURIComponent(project.title)} and I am interested in similar work.`} target="_blank" rel="noopener noreferrer">
                                         Enquire Similar Work
                                     </a>
                                 </Button>

@@ -131,7 +131,10 @@ const ProductsSection = () => {
                 <p className="text-sm text-slate-500 leading-relaxed mb-6 font-medium">
                   {product.description}
                 </p>
-                <button className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-900 group/btn">
+                <button
+                  onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-900 group/btn"
+                >
                   Enquire Now
                   <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
                 </button>

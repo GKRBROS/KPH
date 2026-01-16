@@ -11,6 +11,7 @@ const ServicesSection = lazy(() => import("@/components/home/ServicesSection"));
 const WhyUsSection = lazy(() => import("@/components/home/WhyUsSection"));
 const TestimonialsSection = lazy(() => import("@/components/home/TestimonialsSection"));
 const GallerySection = lazy(() => import("@/components/home/GallerySection"));
+const VideoSection = lazy(() => import("@/components/home/VideoSection"));
 const CTASection = lazy(() => import("@/components/home/CTASection"));
 
 // Loading fallback component
@@ -45,6 +46,9 @@ const Index = () => {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <GallerySection />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <VideoSection />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <CTASection />

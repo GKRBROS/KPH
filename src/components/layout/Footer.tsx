@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, ArrowUpRight, Facebook, Instagram, Linkedin, Building2, Ticket } from "lucide-react";
+import { Phone, MapPin, ArrowUpRight, Facebook, Instagram, Linkedin, Building2, Ticket, MessageCircle } from "lucide-react";
 
 const Footer = () => {
     return (
@@ -32,13 +32,13 @@ const Footer = () => {
                         <p className="text-slate-400 max-w-sm text-sm lg:text-right leading-relaxed font-medium border-l-2 lg:border-l-0 lg:border-r-2 border-primary/30 pl-6 lg:pl-0 lg:pr-6">
                             We are more than a paint shop. We are a legacy of color, quality, and community service in Kerala.
                         </p>
-                        <a
-                            href="tel:+914772212217"
+                        <button
+                            onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
                             className="group flex items-center gap-4 bg-white text-black px-8 py-5 text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300"
                         >
                             <span>Book Consultation</span>
                             <ArrowUpRight className="w-5 h-5 group-hover:rotate-45 transition-transform" />
-                        </a>
+                        </button>
                     </div>
                 </div>
 
@@ -58,7 +58,6 @@ const Footer = () => {
                                 { label: "Main Office", val: "0477-2212444" },
                                 { label: "Mobile", val: "+91 94461 94178" },
                                 { label: "Support", val: "+91 81569 65090" },
-                                { label: "Email", val: "kphpaints@gmail.com" },
                             ].map((item, i) => (
                                 <li key={i} className="group">
                                     <span className="block text-[10px] text-slate-500 uppercase tracking-wider mb-1">{item.label}</span>
@@ -117,25 +116,43 @@ const Footer = () => {
                         <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] flex items-center gap-2">
                             <MapPin className="w-3 h-3" /> Location
                         </span>
-                        <div className="w-full h-40 bg-slate-900 border border-white/10 relative group overflow-hidden grayscale hover:grayscale-0 transition-all duration-500">
+                        <a
+                            href="https://www.google.com/maps/place/KALANGARA+PAINT+HOUSE/@9.3678364,76.476737,17z/data=!3m1!4b1!4m6!3m5!1s0x3b0621a92f986f4d:0xd2f3d16827d04d3f!8m2!3d9.3678364!4d76.476737!16s%2Fg%2F11yc8147td"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full h-44 bg-slate-900 relative group overflow-hidden block border-l-4 border-primary shadow-2xl"
+                        >
                             <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15752.484967332568!2d76.4716773!3d9.3752535!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b089c10bd083819%3A0xc3f7a177b94101e4!2sEdathua%2C%20Kerala!5e0!3m2!1sen!2sin!4v1710925234567!5m2!1sen!2sin"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3936.6088701082676!2d76.476737!3d9.367836399999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0621a92f986f4d%3A0xd2f3d16827d04d3f!2sKALANGARA%20PAINT%20HOUSE!5e0!3m2!1sen!2sin!4v1768544132546!5m2!1sen!2sin"
                                 width="100%"
                                 height="100%"
                                 style={{ border: 0 }}
                                 allowFullScreen
                                 loading="lazy"
                                 referrerPolicy="no-referrer-when-downgrade"
-                                className="opacity-60 group-hover:opacity-100 transition-opacity"
+                                className="opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 pointer-events-none"
                             />
-                            <div className="absolute top-2 right-2 bg-white text-black p-1.5">
-                                <ArrowUpRight className="w-3 h-3" />
+                            {/* Creative Overlay Elements */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+
+                            <div className="absolute bottom-3 left-3 flex items-center gap-2">
+                                <div className="bg-primary px-3 py-1.5 text-[8px] font-black text-white uppercase tracking-widest shadow-lg">
+                                    GET DIRECTIONS
+                                </div>
                             </div>
-                        </div>
+
+                            <div className="absolute top-3 right-3 w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-primary group-hover:border-primary transition-all duration-500">
+                                <ArrowUpRight className="w-4 h-4" />
+                            </div>
+                        </a>
                         <div className="flex gap-4">
-                            {[Facebook, Instagram, Linkedin].map((Icon, idx) => (
-                                <a key={idx} href="#" className="w-10 h-10 border border-white/20 flex items-center justify-center text-white hover:bg-primary hover:border-primary transition-all">
-                                    <Icon className="w-4 h-4" />
+                            {[
+                                { Icon: Facebook, href: "https://www.facebook.com/people/Kalangara-Paints/100071210554136/" },
+                                { Icon: Instagram, href: "https://www.instagram.com/kalangarapaints_edathua/" },
+                                { Icon: MessageCircle, href: "https://wa.me/919446194178" }
+                            ].map((social, idx) => (
+                                <a key={idx} href={social.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-white/20 flex items-center justify-center text-white hover:bg-primary hover:border-primary transition-all">
+                                    <social.Icon className="w-4 h-4" />
                                 </a>
                             ))}
                         </div>

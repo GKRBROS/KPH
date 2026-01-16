@@ -14,7 +14,7 @@ const ShopGallerySection = () => {
     const marqueeImages = [...images, ...images, ...images];
 
     return (
-        <section className="py-20 bg-slate-50 relative overflow-hidden">
+        <section id="showroom" className="py-20 bg-slate-50 relative overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:20px_20px]" />
 
@@ -74,25 +74,27 @@ const ShopGallerySection = () => {
                         <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-50 to-transparent z-10" />
 
                         {/* Scrolling Container */}
-                        <div className="flex gap-5 animate-marquee hover:[animation-play-state:paused] py-4">
+                        <div className="flex gap-5 animate-marquee hover:[animation-play-state:paused] py-4 h-full">
                             {marqueeImages.map((img, index) => (
                                 <div
                                     key={index}
-                                    className="relative flex-none w-[280px] md:w-[320px] h-[380px] group/card cursor-pointer perspective-1000"
+                                    className="relative flex-none w-[300px] md:w-[350px] lg:w-[400px] h-[400px] md:h-[450px] lg:h-full group/card cursor-pointer perspective-1000"
                                 >
-                                    <div className="w-full h-full relative overflow-hidden rounded-sm border border-slate-200 bg-white shadow-lg transition-all duration-500 group-hover/card:-translate-y-2 group-hover/card:shadow-xl">
+                                    <div className="w-full h-full relative overflow-hidden rounded-none border border-slate-200 bg-white shadow-lg transition-all duration-500 group-hover/card:-translate-y-2 group-hover/card:shadow-xl">
 
                                         <img
                                             src={img.src}
                                             alt={img.label}
                                             className="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-110 grayscale-[0.2] group-hover/card:grayscale-0"
+                                            loading="lazy"
+                                            decoding="async"
                                         />
 
                                         {/* Overlay Content */}
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover/card:opacity-100 transition-all duration-300 flex flex-col justify-end p-6">
                                             <div className="translate-y-4 group-hover/card:translate-y-0 transition-transform duration-300">
                                                 <div className="flex items-center justify-between mb-2">
-                                                    <span className="text-primary text-[9px] font-black uppercase tracking-[0.2em] bg-black/50 backdrop-blur-md px-2 py-1 rounded-sm">
+                                                    <span className="text-primary text-[9px] font-black uppercase tracking-[0.2em] bg-black/50 backdrop-blur-md px-2 py-1 rounded-none">
                                                         {img.category}
                                                     </span>
                                                     <ArrowUpRight className="w-4 h-4 text-white" />

@@ -48,14 +48,17 @@ export const ProjectCard = ({ project }: { project: Project }) => {
                 {/* Image Layer */}
                 <div className="absolute inset-0 w-full h-full overflow-hidden">
                     {allImages.map((img, index) => (
-                        <img
-                            key={img}
-                            src={img}
-                            alt={`${project.title} - ${index}`}
-                            loading="lazy"
-                            className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${index === currentImageIndex ? "opacity-100 scale-105" : "opacity-0 scale-100"
-                                } group-hover:grayscale-[0.2] transition-all duration-1000`}
-                        />
+                        (index === 0 || isHovered) && (
+                            <img
+                                key={img}
+                                src={img}
+                                alt={`${project.title} - ${index}`}
+                                loading="lazy"
+                                decoding="async"
+                                className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${index === currentImageIndex ? "opacity-100 scale-105" : "opacity-0 scale-100"
+                                    } group-hover:grayscale-[0.2] transition-all duration-1000`}
+                            />
+                        )
                     ))}
                 </div>
 

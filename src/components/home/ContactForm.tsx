@@ -28,7 +28,6 @@ import {
     X,
     MapPin,
     Phone,
-    Mail,
     ArrowRight,
 } from "lucide-react";
 
@@ -122,7 +121,7 @@ Sq.Ft: ${values.sqft || "N/A"}
 Details: ${values.projectDetails || "N/A"}`;
 
             window.open(
-                `https://wa.me/918301921926?text=${encodeURIComponent(message)}`,
+                `https://wa.me/919446194178?text=${encodeURIComponent(message)}`,
                 "_blank"
             );
 
@@ -161,7 +160,6 @@ Details: ${values.projectDetails || "N/A"}`;
                             {[
                                 { label: "Call Us", value: "0477-2212444 | 9446194178", icon: Phone },
                                 { label: "Alternate Mobile", value: "8156965090", icon: Phone },
-                                { label: "Email Address", value: "kphpaints@gmail.com", icon: Mail },
                                 { label: "Location", value: "St. George Shopping Complex, Edathua", icon: MapPin },
                             ].map((item, idx) => (
                                 <div key={idx} className="group">

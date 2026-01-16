@@ -64,6 +64,8 @@ const ServicesSection = () => {
                                     src={service.image}
                                     alt={service.title}
                                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                                 {/* Corner Icon Box */}
                                 <div className="absolute top-0 right-0 w-12 h-12 bg-[#111111] text-white flex items-center justify-center transition-transform duration-500 group-hover:bg-primary z-20">
@@ -84,7 +86,10 @@ const ServicesSection = () => {
                                 </p>
 
                                 <div className="pt-6 w-full">
-                                    <button className="group/btn flex items-center justify-between w-full text-[10px] font-black uppercase tracking-[0.3em] text-foreground border-t border-slate-100 pt-6 hover:text-primary transition-all">
+                                    <button
+                                        onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+                                        className="group/btn flex items-center justify-between w-full text-[10px] font-black uppercase tracking-[0.3em] text-foreground border-t border-slate-100 pt-6 hover:text-primary transition-all"
+                                    >
                                         ENQUIRE NOW
                                         <div className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover/btn:bg-primary group-hover/btn:border-primary group-hover/btn:text-white transition-all">
                                             <ArrowUpRight className="w-4 h-4" />

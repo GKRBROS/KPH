@@ -36,6 +36,8 @@ const AboutSection = () => {
                 src="/images/kph-shop-3.jpeg"
                 alt="Kalangara Paint House Stock Display"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                loading="lazy"
+                decoding="async"
               />
 
               {/* Sharp Content Overlay */}

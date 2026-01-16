@@ -20,6 +20,8 @@ const HeroSection = () => {
           src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1920&auto=format&fit=crop"
           alt="Premium Dark Interior Finish"
           className="w-full h-full object-cover scale-105"
+          fetchPriority="high"
+          decoding="sync"
         />
         {/* Gradient Overlay for Text Readability */}
         <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />

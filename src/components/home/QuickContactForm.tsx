@@ -27,9 +27,9 @@ import { Loader2 } from "lucide-react";
 const formSchema = z.object({
     name: z.string().min(2, "Name is required"),
     phone: z.string().min(10, "Valid phone is required"),
-    pincode: z.string().min(6, "Valid pincode required"),
+    district: z.string().min(2, "District is required"),
+    serviceRequired: z.string().min(2, "Service type is required"),
     email: z.string().email("Valid email required").or(z.literal("")),
-    language: z.string().min(1, "Please select a language"),
     whatsappUpdates: z.boolean().default(true),
     agreeToTerms: z.boolean().refine(val => val === true, "Agreement is required"),
 });
@@ -44,9 +44,9 @@ const QuickContactForm = () => {
         defaultValues: {
             name: "",
             phone: "",
-            pincode: "",
+            district: "",
+            serviceRequired: "",
             email: "",
-            language: "",
             whatsappUpdates: true,
             agreeToTerms: false,
         },
@@ -60,14 +60,14 @@ const QuickContactForm = () => {
                 name: values.name,
                 phone: values.phone,
                 email: values.email || null,
-                district: values.pincode,
-                interested_in: "Hero Section Lead",
+                district: values.district,
+                interested_in: values.serviceRequired,
                 status: "New",
             });
 
-            const message = `*Expert Painting Enquiry*\nName: ${values.name}\nPhone: ${values.phone}\nPincode: ${values.pincode}\nService: Full Consultation`;
+            const message = `*Expert Painting Enquiry*\nName: ${values.name}\nPhone: ${values.phone}\nDistrict: ${values.district}\nService: ${values.serviceRequired}`;
             window.open(
-                `https://wa.me/918301921926?text=${encodeURIComponent(message)}`,
+                `https://wa.me/919446194178?text=${encodeURIComponent(message)}`,
                 "_blank"
             );
 
@@ -110,7 +110,7 @@ const QuickContactForm = () => {
                                         <Input
                                             {...field}
                                             placeholder="YOUR NAME*"
-                                            className="h-14 bg-slate-50 border-none rounded-none focus-visible:ring-0 focus-visible:bg-white transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 px-6"
+                                            className="h-14 bg-white border border-black/20 rounded-none focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 placeholder:text-[10px] placeholder:font-normal placeholder:tracking-[0.2em] px-6"
                                         />
                                     </div>
                                 </FormControl>
@@ -130,7 +130,7 @@ const QuickContactForm = () => {
                                         <Input
                                             {...field}
                                             placeholder="CONTACT NUMBER*"
-                                            className="h-14 bg-slate-50 border-none rounded-none focus-visible:ring-0 focus-visible:bg-white transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 px-6"
+                                            className="h-14 bg-white border border-black/20 rounded-none focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 placeholder:text-[10px] placeholder:font-normal placeholder:tracking-[0.2em] px-6"
                                         />
                                     </div>
                                 </FormControl>
@@ -142,7 +142,7 @@ const QuickContactForm = () => {
                     <div className="grid grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
-                            name="pincode"
+                            name="district"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
@@ -150,8 +150,8 @@ const QuickContactForm = () => {
                                             <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary transition-all scale-y-0 group-focus-within/input:scale-y-100 z-10" />
                                             <Input
                                                 {...field}
-                                                placeholder="PINCODE*"
-                                                className="h-14 bg-slate-50 border-none rounded-none focus-visible:ring-0 focus-visible:bg-white font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 px-6"
+                                                placeholder="DISTRICT*"
+                                                className="h-14 bg-white border border-black/20 rounded-none focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 placeholder:text-[10px] placeholder:font-normal placeholder:tracking-[0.2em] px-6"
                                             />
                                         </div>
                                     </FormControl>
@@ -162,21 +162,20 @@ const QuickContactForm = () => {
 
                         <FormField
                             control={form.control}
-                            name="language"
+                            name="serviceRequired"
                             render={({ field }) => (
                                 <FormItem>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger className="h-14 bg-slate-50 border-none text-slate-400 rounded-none focus:ring-0 font-heading font-bold text-[13px] tracking-wider uppercase px-6">
-                                                <SelectValue placeholder="LANGUAGE" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent className="rounded-none border-slate-200 shadow-2xl">
-                                            <SelectItem value="English" className="font-heading font-bold text-[12px] uppercase tracking-wider rounded-none">English</SelectItem>
-                                            <SelectItem value="Malayalam" className="font-heading font-bold text-[12px] uppercase tracking-wider rounded-none">Malayalam</SelectItem>
-                                            <SelectItem value="Hindi" className="font-heading font-bold text-[12px] uppercase tracking-wider rounded-none">Hindi</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <FormControl>
+                                        <div className="group/input relative">
+                                            <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary transition-all scale-y-0 group-focus-within/input:scale-y-100 z-10" />
+                                            <Input
+                                                {...field}
+                                                placeholder="SERVICE REQUIRED*"
+                                                className="h-14 bg-white border border-black/20 rounded-none focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 placeholder:text-[10px] placeholder:font-normal placeholder:tracking-[0.2em] px-6"
+                                            />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage className="text-[10px] font-bold uppercase tracking-widest text-primary mt-1" />
                                 </FormItem>
                             )}
                         />
@@ -193,7 +192,7 @@ const QuickContactForm = () => {
                                         <Input
                                             {...field}
                                             placeholder="EMAIL (OPTIONAL)"
-                                            className="h-14 bg-slate-50 border-none rounded-none focus-visible:ring-0 focus-visible:bg-white font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 px-6"
+                                            className="h-14 bg-white border border-black/20 rounded-none focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 placeholder:text-[10px] placeholder:font-normal placeholder:tracking-[0.2em] px-6"
                                         />
                                     </div>
                                 </FormControl>
