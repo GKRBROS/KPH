@@ -67,7 +67,7 @@ const HeroSection = () => {
             {/* Key Facts (Correct Details) */}
             <div className="pt-8 flex flex-wrap items-center justify-center lg:justify-start gap-12 border-t border-white/10 mt-8">
               {[
-                { label: "Legacy", value: "30 YEARS" },
+                { label: "Legacy", value: "EXCELLENCE" },
                 { label: "Discount", value: "UP TO 30%" },
                 { label: "Warranty", value: "10 YEAR" }
               ].map((badge, idx) => (
