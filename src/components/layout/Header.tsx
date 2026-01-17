@@ -14,7 +14,7 @@ const Header = ({ forceWhite = false }: HeaderProps) => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -74,6 +74,8 @@ const Header = ({ forceWhite = false }: HeaderProps) => {
                   src="/icons/icon.png"
                   alt="KPH Logo"
                   className="w-full h-full object-contain"
+                  width="48"
+                  height="48"
                 />
               </div>
             </a>

@@ -18,10 +18,18 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-black/50 z-10" />
         <img
           src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1920&auto=format&fit=crop"
+          srcSet="
+            https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=640&auto=format&fit=crop 640w,
+            https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1024&auto=format&fit=crop 1024w,
+            https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1920&auto=format&fit=crop 1920w
+          "
+          sizes="100vw"
           alt="Premium Dark Interior Finish"
           className="w-full h-full object-cover scale-105"
           fetchPriority="high"
           decoding="sync"
+          width="1920"
+          height="1080"
         />
         {/* Gradient Overlay for Text Readability */}
         <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />

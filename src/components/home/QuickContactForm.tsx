@@ -110,6 +110,7 @@ const QuickContactForm = () => {
                                         <Input
                                             {...field}
                                             placeholder="YOUR NAME*"
+                                            aria-label="Your Name"
                                             className="h-14 bg-white border border-black/20 rounded-none focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 placeholder:text-[10px] placeholder:font-normal placeholder:tracking-[0.2em] px-6"
                                         />
                                     </div>
@@ -130,6 +131,7 @@ const QuickContactForm = () => {
                                         <Input
                                             {...field}
                                             placeholder="CONTACT NUMBER*"
+                                            aria-label="Contact Number"
                                             className="h-14 bg-white border border-black/20 rounded-none focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 placeholder:text-[10px] placeholder:font-normal placeholder:tracking-[0.2em] px-6"
                                         />
                                     </div>
@@ -151,6 +153,7 @@ const QuickContactForm = () => {
                                             <Input
                                                 {...field}
                                                 placeholder="DISTRICT*"
+                                                aria-label="District"
                                                 className="h-14 bg-white border border-black/20 rounded-none focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 placeholder:text-[10px] placeholder:font-normal placeholder:tracking-[0.2em] px-6"
                                             />
                                         </div>
@@ -171,6 +174,7 @@ const QuickContactForm = () => {
                                             <Input
                                                 {...field}
                                                 placeholder="SERVICE REQUIRED*"
+                                                aria-label="Service Required"
                                                 className="h-14 bg-white border border-black/20 rounded-none focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 placeholder:text-[10px] placeholder:font-normal placeholder:tracking-[0.2em] px-6"
                                             />
                                         </div>
@@ -192,6 +196,7 @@ const QuickContactForm = () => {
                                         <Input
                                             {...field}
                                             placeholder="EMAIL (OPTIONAL)"
+                                            aria-label="Email Address"
                                             className="h-14 bg-white border border-black/20 rounded-none focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black transition-all font-heading font-bold text-[13px] tracking-wider uppercase placeholder:text-slate-400 placeholder:text-[10px] placeholder:font-normal placeholder:tracking-[0.2em] px-6"
                                         />
                                     </div>

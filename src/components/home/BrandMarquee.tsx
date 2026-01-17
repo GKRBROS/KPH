@@ -24,7 +24,7 @@ const BrandMarquee = () => {
 
                 {/* Left Side: Scrolling Marquee */}
                 <div className="flex-grow relative bg-slate-100 py-1 lg:py-0 flex items-center overflow-hidden">
-                    <div className="flex whitespace-nowrap animate-marquee items-center py-0.5">
+                    <div className="flex whitespace-nowrap animate-marquee items-center py-0.5 will-change-transform">
                         {marqueeBrands.map((brand, index) => (
                             <div
                                 key={`${brand.name}-${index}`}

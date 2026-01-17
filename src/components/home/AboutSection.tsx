@@ -38,6 +38,8 @@ const AboutSection = () => {
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                 loading="lazy"
                 decoding="async"
+                width="800"
+                height="800"
               />
 
               {/* Sharp Content Overlay */}

@@ -131,6 +131,7 @@ const Footer = () => {
                                 loading="lazy"
                                 referrerPolicy="no-referrer-when-downgrade"
                                 className="opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 pointer-events-none"
+                                title="Google Maps Location of Kalangara Paint House"
                             />
                             {/* Creative Overlay Elements */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
@@ -151,7 +152,7 @@ const Footer = () => {
                                 { Icon: Instagram, href: "https://www.instagram.com/kalangarapaints_edathua/" },
                                 { Icon: MessageCircle, href: "https://wa.me/919446194178" }
                             ].map((social, idx) => (
-                                <a key={idx} href={social.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-white/20 flex items-center justify-center text-white hover:bg-primary hover:border-primary transition-all">
+                                <a key={idx} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`Visit our ${social.href.includes('facebook') ? 'Facebook' : social.href.includes('instagram') ? 'Instagram' : 'WhatsApp'} page`} className="w-10 h-10 border border-white/20 flex items-center justify-center text-white hover:bg-primary hover:border-primary transition-all">
                                     <social.Icon className="w-4 h-4" />
                                 </a>
                             ))}

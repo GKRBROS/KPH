@@ -7,21 +7,21 @@ const ServicesSection = () => {
             title: "Waterproofing",
             subtitle: "LEAK PROTECTION",
             description: "Expert solutions from Dr. Fixit and Asian Paints SmartCare Damp Proof. A single solution for summer heat and monsoon leaks.",
-            image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop",
+            image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=640&auto=format&fit=crop",
             icon: Droplets
         },
         {
             title: "Climate Protection",
             subtitle: "WEATHER SHIELD",
             description: "Premium paints engineered to withstand Kuttanad's high humidity, heavy rains, and intense heat. Protects against moss and algae.",
-            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1973&auto=format&fit=crop",
+            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=640&auto=format&fit=crop",
             icon: ShieldCheck
         },
         {
             title: "Wall Care",
             subtitle: "SMOOTH FINISH",
             description: "Top-tier white cements and putties from Birla White and Vembanadu to ensure your walls are perfectly smooth and durable.",
-            image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=2070&auto=format&fit=crop",
+            image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=640&auto=format&fit=crop",
             icon: Paintbrush
         }
     ];
@@ -66,6 +66,8 @@ const ServicesSection = () => {
                                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     loading="lazy"
                                     decoding="async"
+                                    width="640"
+                                    height="300"
                                 />
                                 {/* Corner Icon Box */}
                                 <div className="absolute top-0 right-0 w-12 h-12 bg-[#111111] text-white flex items-center justify-center transition-transform duration-500 group-hover:bg-primary z-20">

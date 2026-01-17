@@ -79,7 +79,7 @@ const TestimonialsSection = () => {
                 <div className="flex items-center gap-4">
                   <div className="relative">
                     <div className="w-16 h-16 overflow-hidden shadow-md ring-2 ring-white group-hover:ring-orange-200 transition-all">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" width="64" height="64" />
                     </div>
                   </div>
                   <div>

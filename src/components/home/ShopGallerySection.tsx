@@ -74,7 +74,7 @@ const ShopGallerySection = () => {
                         <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-50 to-transparent z-10" />
 
                         {/* Scrolling Container */}
-                        <div className="flex gap-5 animate-marquee hover:[animation-play-state:paused] py-4 h-full">
+                        <div className="flex gap-5 animate-marquee hover:[animation-play-state:paused] py-4 h-full will-change-transform">
                             {marqueeImages.map((img, index) => (
                                 <div
                                     key={index}
@@ -88,6 +88,8 @@ const ShopGallerySection = () => {
                                             className="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-110 grayscale-[0.2] group-hover/card:grayscale-0"
                                             loading="lazy"
                                             decoding="async"
+                                            width="400"
+                                            height="500"
                                         />
 
                                         {/* Overlay Content */}
