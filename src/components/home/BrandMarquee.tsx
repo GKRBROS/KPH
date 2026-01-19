@@ -36,6 +36,8 @@ const BrandMarquee = () => {
                                         alt={brand.name}
                                         loading="lazy"
                                         className="h-full w-auto object-contain transition-all duration-500 opacity-90 group-hover/brand:opacity-100"
+                                        width="150"
+                                        height="60"
                                     />
                                 </div>
                                 <span className="mt-0.5 text-[7px] font-bold text-slate-400 uppercase tracking-[0.2em] opacity-0 group-hover/brand:opacity-100 transition-all duration-300">

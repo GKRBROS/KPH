@@ -166,10 +166,7 @@ const Footer = () => {
                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
                         © {new Date().getFullYear()} Kalangara Paint House
                     </p>
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                        <span className="text-[10px] text-green-500 font-bold uppercase tracking-widest">System Operational</span>
-                    </div>
+
                 </div>
 
             </div>

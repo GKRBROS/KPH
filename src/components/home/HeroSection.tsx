@@ -63,8 +63,8 @@ const HeroSection = () => {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
-              <a href="tel:04772212444" className="inline-flex items-center justify-center bg-primary text-white hover:bg-white hover:text-black font-black px-10 py-7 text-xs rounded-none transition-all duration-300 w-full sm:w-auto uppercase tracking-widest border border-primary">
-                Call For Best Price
+              <a href="#services" onClick={(e) => { e.preventDefault(); document.querySelector('#services')?.scrollIntoView({ behavior: 'smooth' }); }} className="inline-flex items-center justify-center bg-primary text-white hover:bg-white hover:text-black font-black px-10 py-7 text-xs rounded-none transition-all duration-300 w-full sm:w-auto uppercase tracking-widest border border-primary">
+                Our Services
                 <ArrowRight className="w-4 h-4 ml-2" />
               </a>
               <a href="#brands" onClick={(e) => { e.preventDefault(); document.querySelector('.animate-marquee')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }} className="inline-flex items-center justify-center border border-white/30 text-white hover:bg-white hover:text-black font-black px-10 py-7 text-xs rounded-none transition-all duration-300 w-full sm:w-auto bg-transparent uppercase tracking-widest cursor-pointer">
