@@ -63,7 +63,11 @@ export function DistrictSelect({ value, onValueChange, className, placeholder = 
                         className
                     )}
                 >
-                    <span className="truncate flex-1 text-left">
+                    <span className={cn(
+                        "truncate flex-1 text-left",
+                        !value && isHero && "text-slate-400 text-[10px] font-normal tracking-[0.2em]", // Hero placeholder style
+                        !value && !isHero && "text-muted-foreground" // Default placeholder style
+                    )}>
                         {value
                             ? districts.find((district) => district === value)
                             : placeholder}
