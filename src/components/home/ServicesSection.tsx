@@ -1,35 +1,83 @@
-import { ArrowRight, Paintbrush, ShieldCheck, Droplets, ArrowUpRight, Truck, Phone, Palette } from "lucide-react";
+import { ArrowRight, Paintbrush, ShieldCheck, Droplets, ArrowUpRight, Truck, Phone, Palette, PaintRoller, Building2, HardHat, ClipboardCheck, Wrench, Briefcase } from "lucide-react";
 import ShopGallerySection from "./ShopGallerySection";
 
 const ServicesSection = () => {
     const services = [
         {
-            title: "Waterproofing",
+            title: "Waterproofing Solutions",
             subtitle: "LEAK PROTECTION",
-            description: "Expert solutions from Dr. Fixit and Asian Paints SmartCare Damp Proof. A single solution for summer heat and monsoon leaks.",
-            image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=640&auto=format&fit=crop",
+            description: "Advanced waterproofing for terraces & walls using top-tier emulsions and primers from Asian Paints, JSW, Berger, & Birla. Complete protection with specialized roof coatings, putty, and leak-proof solutions.",
+            image: "/images/waterproofing_solutions.png",
             icon: Droplets
         },
         {
-            title: "Climate Protection",
+            title: "Climate Protection Coatings",
             subtitle: "WEATHER SHIELD",
-            description: "Premium paints engineered to withstand Kuttanad's high humidity, heavy rains, and intense heat. Protects against moss and algae.",
-            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=640&auto=format&fit=crop",
+            description: "Advanced heat and weather-resistant coatings that safeguard buildings from extreme sunlight, rain, and temperature changes, improving durability and indoor comfort.",
+            image: "/images/climate_protection_coatings.png",
             icon: ShieldCheck
         },
         {
-            title: "Wall Care",
+            title: "Wall Care & Surface Treatment",
             subtitle: "SMOOTH FINISH",
-            description: "Top-tier white cements and putties from Birla White and Vembanadu to ensure your walls are perfectly smooth and durable.",
-            image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=640&auto=format&fit=crop",
+            description: "Premium surface preparation with Birla White & Vembanadu cements, plus Birla Putty. We utilize waterproof primers and polymers from Asian Paints, JSW, & Indigo for effective crack filling and damp treatment.",
+            image: "/images/wall_care_surface_treatment.png",
             icon: Paintbrush
+        },
+        {
+            title: "Professional Painting Services",
+            subtitle: "PREMIUM FINISH",
+            description: "High-quality interior and exterior painting for residential, commercial, and industrial spaces using premium materials and skilled workmanship.",
+            image: "/images/professional_painting_services.png",
+            icon: PaintRoller
+        },
+        {
+            title: "Commercial & Bulk Painting",
+            subtitle: "LARGE SCALE",
+            description: "Specialized solutions for large-scale projects such as offices, factories, apartments, and housing societies with timely execution and consistent quality.",
+            image: "/images/commercial_bulk_painting.png",
+            icon: Building2
+        },
+        {
+            title: "Paint Consultation",
+            subtitle: "EXPERT GUIDANCE",
+            description: "Expert guidance on color selection, finishes, material choice, and maintenance to help you achieve the perfect look and longlasting results.",
+            image: "/images/paint_consultation.png",
+            icon: Palette
         }
     ];
 
     const customerServices = [
-        { icon: Truck, text: "Home Delivery" },
-        { icon: Palette, text: "EzyColour Consultation" },
-        { icon: Phone, text: "Expert Advice" }
+        {
+            icon: Truck,
+            title: "Free Home Delivery",
+            description: "Get premium paints and supplies delivered directly to your doorstep with zero hassle."
+        },
+        {
+            icon: Palette,
+            title: "Color Consultation",
+            description: "Expert assistance to choose the perfect color palette that matches your style and space."
+        },
+        {
+            icon: HardHat,
+            title: "Complete Project Works",
+            description: "End-to-end management of painting projects, ensuring quality and timely completion."
+        },
+        {
+            icon: ShieldCheck,
+            title: "Warranted Painting",
+            description: "Professional painting services backed by official warranties for your peace of mind."
+        },
+        {
+            icon: Briefcase,
+            title: "Executive Site Visits",
+            description: "Our company executives visit your site to assess requirements and ensure standards."
+        },
+        {
+            icon: Wrench,
+            title: "After-Sales Support",
+            description: "Dedicated maintenance checks and support even after the project is completed."
+        }
     ];
 
     return (
@@ -38,12 +86,13 @@ const ServicesSection = () => {
                 {/* Minimalist Heading Block */}
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-20">
                     <div className="max-w-2xl space-y-4">
-                        <div className="flex items-center gap-2">
-                            <span className="w-10 h-[2px] bg-primary" />
-                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Specialized Solutions</span>
+                        <div>
+                            <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
+                                Our Services
+                            </span>
                         </div>
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-foreground tracking-tighter uppercase leading-[0.9]">
-                            We Don't Just <br /> <span className="text-primary italic">Sell Color</span>
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-normal text-foreground tracking-tighter uppercase leading-[0.9]">
+                            We Don't Just <br /> <span className="text-primary font-serif">Sell Color</span>
                         </h2>
                     </div>
                     <p className="text-slate-500 font-medium max-w-sm text-sm md:text-base border-l border-slate-100 pl-6 hidden lg:block">
@@ -51,84 +100,108 @@ const ServicesSection = () => {
                     </p>
                 </div>
 
-                {/* Services Grid - Slim & Sharp */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-slate-100 mb-0">
+                {/* Services Grid - Modern & Elevated */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-0">
                     {services.map((service, index) => (
                         <div
                             key={index}
-                            className="group relative flex flex-col border-r last:border-r-0 border-slate-100 hover:bg-slate-50 transition-all duration-700 overflow-hidden"
+                            className="group relative flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-200"
                         >
                             {/* Service Image */}
-                            <div className="aspect-[21/10] sm:aspect-[21/9] overflow-hidden relative border-b border-slate-100">
+                            <div className="aspect-[16/10] overflow-hidden relative">
+                                <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors duration-500 z-10" />
                                 <img
                                     src={service.image}
                                     alt={service.title}
-                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     loading="lazy"
                                     decoding="async"
                                     width="640"
                                     height="300"
                                 />
                                 {/* Corner Icon Box */}
-                                <div className="absolute top-0 right-0 w-12 h-12 bg-[#111111] text-white flex items-center justify-center transition-transform duration-500 group-hover:bg-primary z-20">
+                                <div className="absolute bottom-4 right-4 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-xl text-slate-900 flex items-center justify-center shadow-lg transition-transform duration-500 group-hover:scale-110 z-20 group-hover:bg-primary group-hover:text-white">
                                     <service.icon className="w-5 h-5" strokeWidth={1.5} />
                                 </div>
                             </div>
 
                             {/* Service Content */}
-                            <div className="p-8 md:p-10 flex flex-col items-start space-y-4">
-                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">
+                            <div className="p-8 flex flex-col items-start flex-grow relative">
+                                <span className="inline-block py-1 px-3 rounded-full bg-slate-100 text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4">
                                     {service.subtitle}
                                 </span>
-                                <h3 className="text-2xl font-black font-heading text-foreground uppercase tracking-tighter leading-none group-hover:text-primary transition-colors">
+                                <h3 className="text-2xl font-semibold font-heading text-slate-900 uppercase tracking-tight leading-none mb-3 group-hover:text-primary transition-colors">
                                     {service.title}
                                 </h3>
-                                <p className="text-slate-500 text-[13px] leading-relaxed font-semibold">
+                                <p className="text-slate-500 text-sm leading-relaxed font-medium mb-6">
                                     {service.description}
                                 </p>
 
-                                <div className="pt-6 w-full">
+                                <div className="mt-auto w-full pt-6 border-t border-slate-100">
                                     <button
                                         onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-                                        className="group/btn flex items-center justify-between w-full text-[10px] font-black uppercase tracking-[0.3em] text-foreground border-t border-slate-100 pt-6 hover:text-primary transition-all"
+                                        className="w-full group/btn flex items-center justify-between text-xs font-bold uppercase tracking-widest text-slate-900 hover:text-primary transition-colors"
                                     >
-                                        ENQUIRE NOW
-                                        <div className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover/btn:bg-primary group-hover/btn:border-primary group-hover/btn:text-white transition-all">
-                                            <ArrowUpRight className="w-4 h-4" />
-                                        </div>
+                                        <span>Enquire Now</span>
+                                        <ArrowRight className="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" />
                                     </button>
                                 </div>
                             </div>
-
-                            {/* Hover Bottom Border */}
-                            <div className="absolute bottom-0 left-0 w-0 h-1 bg-primary transition-all duration-700 group-hover:w-full" />
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* Shop Gallery Section - Full Width */}
-            <ShopGallerySection />
+            {/* Additional Services - Redesigned & Moved */}
+            <div className="bg-white py-16 md:py-24 relative overflow-hidden">
+                {/* Decorative Background Elements */}
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30 pointer-events-none" />
 
-            {/* Additional Services Banner */}
-            <div className="container mx-auto px-4 relative z-10 pb-16">
-                <div className="bg-slate-50 border border-slate-100 p-8 md:p-12">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                        <div>
-                            <h4 className="font-black font-heading text-2xl text-slate-900 mb-2 uppercase tracking-tight">Additional Services</h4>
-                            <p className="text-slate-500 text-sm">We make painting stress-free with these expert add-ons.</p>
-                        </div>
-                        <div className="flex flex-wrap gap-4 md:gap-8">
-                            {customerServices.map((item, idx) => (
-                                <div key={idx} className="flex items-center gap-3 bg-white px-6 py-4 border border-slate-200 shadow-sm">
-                                    <item.icon className="w-5 h-5 text-primary" />
-                                    <span className="text-xs font-bold uppercase tracking-widest text-slate-900">{item.text}</span>
+                <div className="container mx-auto px-4 relative z-10">
+                    <div className="text-center max-w-2xl mx-auto mb-16">
+                        <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                            Premium Add-ons
+                        </span>
+                        <h3 className="text-4xl md:text-5xl lg:text-6xl font-heading font-normal text-foreground tracking-tighter uppercase leading-[0.9]">
+                            Everything You Need <br />
+                            <span className="text-primary font-serif">Under One Roof</span>
+                        </h3>
+                        <p className="mt-4 text-slate-500 font-medium max-w-lg mx-auto">
+                            We go beyond just selling paint. Experience a complete ecosystem of services designed for your convenience and peace of mind.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                        {customerServices.map((item, idx) => (
+                            <div key={idx} className="group relative bg-[#F3E8FF] p-8 rounded-3xl border border-purple-300 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-500 hover:-translate-y-1 overflow-hidden">
+                                {/* Subtle Hover Gradient Background */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                                <div className="relative z-10 flex flex-col items-start h-full">
+                                    {/* Minimalist Icon Container */}
+                                    <div className="mb-6 w-14 h-14 rounded-2xl bg-white text-purple-600 flex items-center justify-center transition-all duration-500 group-hover:bg-purple-600 group-hover:text-white group-hover:rotate-3 shadow-sm group-hover:shadow-purple-500/25 ring-1 ring-purple-50">
+                                        <item.icon className="w-7 h-7" strokeWidth={1.5} />
+                                    </div>
+
+                                    {/* Content */}
+                                    <h4 className="text-xl font-bold font-heading text-slate-900 uppercase tracking-tight mb-3 group-hover:text-purple-700 transition-colors duration-300">
+                                        {item.title}
+                                    </h4>
+                                    <p className="text-sm font-medium text-slate-500 leading-relaxed mb-6 group-hover:text-slate-600">
+                                        {item.description}
+                                    </p>
+
+                                    {/* Bottom Action Line */}
+                                    <div className="mt-auto w-12 h-1 bg-purple-200 rounded-full group-hover:w-full group-hover:bg-purple-600 transition-all duration-500 ease-out" />
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
+
+            {/* Shop Gallery Section - Full Width */}
+            <ShopGallerySection />
         </section>
     );
 };

@@ -50,10 +50,7 @@ const Footer = () => {
                                 <span className="text-[10px] font-bold tracking-[0.4em] text-slate-500 uppercase">Edathua</span>
                             </div>
                         </div>
-                        <h2 className="text-4xl md:text-5xl lg:text-7xl font-heading font-black tracking-tighter text-white uppercase leading-[0.9]">
-                            Constructing <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-200 to-slate-600">Perfection</span>
-                        </h2>
+                        {/* Heading removed */}
                     </div>
 
                     <div className="flex flex-col items-start lg:items-end gap-6">

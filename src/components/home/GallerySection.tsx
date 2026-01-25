@@ -94,8 +94,8 @@ const GallerySection = () => {
                             <Camera className="w-3 h-3" />
                             Curated Masterpieces
                         </span>
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-slate-900 tracking-tighter leading-[0.9] uppercase">
-                            Visionary <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-500">Architectural Spaces</span>
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-normal text-slate-900 tracking-tighter leading-[0.9] uppercase">
+                            Visionary <br /> <span className="text-primary font-serif">Architectural Spaces</span>
                         </h2>
                     </div>
 

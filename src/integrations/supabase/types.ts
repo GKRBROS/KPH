@@ -165,6 +165,27 @@ export type Database = {
         }
         Relationships: []
       }
+      reels: {
+        Row: {
+          id: string
+          video_url: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          video_url: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          video_url?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
