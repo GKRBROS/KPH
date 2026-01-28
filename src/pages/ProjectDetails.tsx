@@ -211,62 +211,75 @@ const ProjectDetails = () => {
                             </span>
 
                             <div className="relative z-10">
-                                <span className="inline-block px-4 py-1.5 mb-6 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-black shadow-lg">
-                                    {project.category}
-                                </span>
+                                {project.title ? (
+                                    <>
+                                        {project.category && (
+                                            <span className="inline-block px-4 py-1.5 mb-6 text-[10px] font-bold tracking-[0.2em] text-white uppercase bg-black shadow-lg">
+                                                {project.category}
+                                            </span>
+                                        )}
 
-                                <h1 className="text-3xl md:text-4xl font-heading font-black text-slate-900 mb-2 leading-[1.1] tracking-tight">
-                                    {project.title}
-                                </h1>
+                                        <h1 className="text-3xl md:text-4xl font-heading font-black text-slate-900 mb-2 leading-[1.1] tracking-tight">
+                                            {project.title}
+                                        </h1>
 
-                                <div className="flex items-center text-slate-500 font-bold text-xs uppercase tracking-wider mb-8">
-                                    <MapPin className="w-4 h-4 mr-2 text-primary" />
-                                    {project.location}
-                                </div>
+                                        {project.location && (
+                                            <div className="flex items-center text-slate-500 font-bold text-xs uppercase tracking-wider mb-8">
+                                                <MapPin className="w-4 h-4 mr-2 text-primary" />
+                                                {project.location}
+                                            </div>
+                                        )}
 
-                                <p className="text-slate-600 leading-relaxed mb-8 text-sm md:text-base border-l-2 border-primary/20 pl-4">
-                                    {project.description}
-                                </p>
-
-                                {/* Stats Grid */}
-                                <div className="grid grid-cols-2 gap-4 mb-8">
-                                    <div className="bg-slate-50 p-4 border border-slate-100 transition-colors hover:border-primary/20">
-                                        <div className="flex items-center text-primary mb-2">
-                                            <Ruler className="w-4 h-4" />
-                                        </div>
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Area</p>
-                                        <p className="text-slate-900 font-bold">{project.sqft || 'N/A'}</p>
-                                    </div>
-                                    <div className="bg-slate-50 p-4 border border-slate-100 transition-colors hover:border-primary/20">
-                                        <div className="flex items-center text-primary mb-2">
-                                            <Calendar className="w-4 h-4" />
-                                        </div>
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Year</p>
-                                        <p className="text-slate-900 font-bold">
-                                            {project.completion_date ? new Date(project.completion_date).getFullYear() : defaultYear}
+                                        <p className="text-slate-600 leading-relaxed mb-8 text-sm md:text-base border-l-2 border-primary/20 pl-4">
+                                            {project.description}
                                         </p>
-                                    </div>
-                                </div>
 
-                                <div className="space-y-3 mb-10">
-                                    <h3 className="font-bold text-slate-900 text-xs uppercase tracking-widest flex items-center gap-2">
-                                        <Info className="w-4 h-4" />
-                                        Project Highlights
-                                    </h3>
-                                    <ul className="space-y-2">
-                                        <li className="flex items-center text-slate-600 text-sm font-medium">
-                                            <CheckCircle2 className="w-4 h-4 mr-3 text-green-500" />
-                                            <span>Premium Quality Finish</span>
-                                        </li>
-                                        <li className="flex items-center text-slate-600 text-sm font-medium">
-                                            <CheckCircle2 className="w-4 h-4 mr-3 text-green-500" />
-                                            <span>10-Year Warranty</span>
-                                        </li>
-                                    </ul>
-                                </div>
+                                        {/* Stats Grid */}
+                                        <div className="grid grid-cols-2 gap-4 mb-8">
+                                            <div className="bg-slate-50 p-4 border border-slate-100 transition-colors hover:border-primary/20">
+                                                <div className="flex items-center text-primary mb-2">
+                                                    <Ruler className="w-4 h-4" />
+                                                </div>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Area</p>
+                                                <p className="text-slate-900 font-bold">{project.sqft || 'N/A'}</p>
+                                            </div>
+                                            <div className="bg-slate-50 p-4 border border-slate-100 transition-colors hover:border-primary/20">
+                                                <div className="flex items-center text-primary mb-2">
+                                                    <Calendar className="w-4 h-4" />
+                                                </div>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Year</p>
+                                                <p className="text-slate-900 font-bold">
+                                                    {project.completion_date ? new Date(project.completion_date).getFullYear() : defaultYear}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3 mb-10">
+                                            <h3 className="font-bold text-slate-900 text-xs uppercase tracking-widest flex items-center gap-2">
+                                                <Info className="w-4 h-4" />
+                                                Project Highlights
+                                            </h3>
+                                            <ul className="space-y-2">
+                                                <li className="flex items-center text-slate-600 text-sm font-medium">
+                                                    <CheckCircle2 className="w-4 h-4 mr-3 text-green-500" />
+                                                    <span>Premium Quality Finish</span>
+                                                </li>
+                                                <li className="flex items-center text-slate-600 text-sm font-medium">
+                                                    <CheckCircle2 className="w-4 h-4 mr-3 text-green-500" />
+                                                    <span>10-Year Warranty</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </>
+                                ) : (
+                                    /* Image Only Mode - Just show the button */
+                                    <div className="mb-4 text-center">
+                                        <p className="text-slate-500 italic mb-4">View our work gallery.</p>
+                                    </div>
+                                )}
 
                                 <Button className="w-full h-14 text-sm font-bold tracking-widest uppercase rounded-none shadow-xl shadow-primary/20 hover:translate-y-[-2px] transition-all bg-primary hover:bg-primary/90" asChild>
-                                    <a href={`https://wa.me/919446194178?text=Hi, I saw the project ${encodeURIComponent(project.title)} and I am interested in similar work.`} target="_blank" rel="noopener noreferrer">
+                                    <a href={`https://wa.me/919446194178?text=Hi, I saw the project ${encodeURIComponent(project.title || "Image Gallery")} and I am interested in similar work.`} target="_blank" rel="noopener noreferrer">
                                         Enquire Similar Work
                                     </a>
                                 </Button>

@@ -29,6 +29,16 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
     Select,
     SelectContent,
     SelectItem,
@@ -56,6 +66,10 @@ const WorkerTracking = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingWorker, setEditingWorker] = useState<Worker | null>(null);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    // Delete Dialog State
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [workerToDelete, setWorkerToDelete] = useState<Worker | null>(null);
 
     // Filter & Search State
     const [searchQuery, setSearchQuery] = useState("");
@@ -180,14 +194,19 @@ const WorkerTracking = () => {
         }
     };
 
-    const handleDelete = async (worker: Worker) => {
-        if (!confirm(`Are you sure you want to delete ${worker.name}?`)) return;
+    const handleDelete = (worker: Worker) => {
+        setWorkerToDelete(worker);
+        setDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!workerToDelete) return;
 
         try {
             const { error } = await supabase
                 .from('workers')
                 .delete()
-                .eq('id', worker.id);
+                .eq('id', workerToDelete.id);
 
             if (error) throw error;
 
@@ -196,6 +215,9 @@ const WorkerTracking = () => {
         } catch (error: unknown) {
             toast.error("Failed to delete worker");
             console.error(error);
+        } finally {
+            setDeleteDialogOpen(false);
+            setWorkerToDelete(null);
         }
     };
 
@@ -645,6 +667,28 @@ const WorkerTracking = () => {
                     </div>
                 </DialogContent>
             </Dialog>
+
+            {/* Delete Confirmation Dialog */}
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <AlertDialogContent className="rounded-2xl">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="font-bold text-xl">Confirm Deletion</AlertDialogTitle>
+                        <AlertDialogDescription className="text-slate-500">
+                            Are you sure you want to remove <span className="font-bold text-slate-700">{workerToDelete?.name}</span>?
+                            This action cannot be undone and will permanently delete their profile and records.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={confirmDelete}
+                            className="bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold"
+                        >
+                            Delete Worker
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </AdminLayout>
     );
 };

@@ -22,6 +22,16 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
     Select,
     SelectContent,
     SelectItem,
@@ -37,6 +47,7 @@ interface Project {
     category: string;
     cover_image_url: string;
     completion_date: string;
+    date_format?: 'year' | 'month' | 'full';
     sqft: string;
     created_at: string;
     work_images?: { image_url: string }[];
@@ -128,14 +139,19 @@ const WorksGallery = () => {
     const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
     const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
 
+    // Delete Dialog State
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+
     // Form state
     const [formData, setFormData] = useState({
         title: "",
         description: "",
         location: "",
-        category: "Interior Painting",
+        category: "",
         sqft: "",
         completionDate: "",
+        dateFormat: "full" as "year" | "month" | "full",
     });
 
     useEffect(() => {
@@ -178,8 +194,9 @@ const WorksGallery = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validation: New projects must have at least one image
-        if (!editingProject && galleryFiles.length === 0) {
+        // Validation: Projects must have at least one image
+        const totalImages = (existingGalleryImages?.length || 0) + galleryFiles.length;
+        if (totalImages === 0) {
             toast.error("Please add at least one project image");
             return;
         }
@@ -227,6 +244,7 @@ const WorksGallery = () => {
                 category: formData.category,
                 sqft: formData.sqft,
                 completion_date: formData.completionDate || null,
+                date_format: formData.dateFormat,
                 cover_image_url: coverUrl,
             };
 
@@ -280,15 +298,20 @@ const WorksGallery = () => {
         }
     };
 
-    const handleDelete = async (project: Project) => {
-        if (!confirm("Are you sure you want to delete this project?")) return;
+    const handleDelete = (project: Project) => {
+        setProjectToDelete(project);
+        setDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!projectToDelete) return;
 
         try {
             // Delete from database
             const { error: dbError } = await supabase
                 .from('projects' as any)
                 .delete()
-                .eq('id', project.id);
+                .eq('id', projectToDelete.id);
 
             if (dbError) throw dbError;
 
@@ -297,6 +320,9 @@ const WorksGallery = () => {
         } catch (error: any) {
             toast.error("Failed to delete project");
             console.error(error);
+        } finally {
+            setDeleteDialogOpen(false);
+            setProjectToDelete(null);
         }
     };
 
@@ -306,9 +332,10 @@ const WorksGallery = () => {
             title: project.title,
             description: project.description || "",
             location: project.location || "",
-            category: project.category || "Interior Painting",
+            category: project.category || "",
             sqft: project.sqft || "",
             completionDate: project.completion_date || "",
+            dateFormat: (project.date_format as "year" | "month" | "full") || "full",
         });
         fetchProjectImages(project.id);
         setDialogOpen(true);
@@ -350,9 +377,10 @@ const WorksGallery = () => {
             title: "",
             description: "",
             location: "",
-            category: "Interior Painting",
+            category: "",
             sqft: "",
             completionDate: "",
+            dateFormat: "full",
         });
         setEditingProject(null);
         setGalleryFiles([]);
@@ -393,7 +421,6 @@ const WorksGallery = () => {
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         placeholder="Modern Villa Interior"
-                                        required
                                         className="h-12 rounded-xl"
                                     />
                                 </div>
@@ -402,12 +429,15 @@ const WorksGallery = () => {
                                     <Label htmlFor="category" className="text-xs font-black uppercase text-slate-400">Category</Label>
                                     <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
                                         <SelectTrigger className="h-12 rounded-xl">
-                                            <SelectValue />
+                                            <SelectValue placeholder="Select Category" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="Interior Painting">Interior Painting</SelectItem>
                                             <SelectItem value="Exterior Painting">Exterior Painting</SelectItem>
-                                            <SelectItem value="Waterproofing">Waterproofing</SelectItem>
+                                            <SelectItem value="Waterproofing Solutions">Waterproofing Solutions</SelectItem>
+                                            <SelectItem value="Climate Protection Coatings">Climate Protection Coatings</SelectItem>
+                                            <SelectItem value="Wall Care & Surface Treatment">Wall Care & Surface Treatment</SelectItem>
+                                            <SelectItem value="Commercial & Bulk Painting">Commercial & Bulk Painting</SelectItem>
                                             <SelectItem value="Full Home Makeover">Full Home Makeover</SelectItem>
                                         </SelectContent>
                                     </Select>
@@ -433,7 +463,6 @@ const WorksGallery = () => {
                                         value={formData.location}
                                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                                         placeholder="Edathua, Kerala"
-                                        required
                                         className="h-12 rounded-xl"
                                     />
                                 </div>
@@ -450,21 +479,67 @@ const WorksGallery = () => {
                                 </div>
 
                                 <div className="space-y-2">
+                                    <Label className="text-xs font-black uppercase text-slate-400">Date Format</Label>
+                                    <Select
+                                        value={formData.dateFormat}
+                                        onValueChange={(value: "year" | "month" | "full") => setFormData({ ...formData, dateFormat: value })}
+                                    >
+                                        <SelectTrigger className="h-12 rounded-xl">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="full">Full Date (DD/MM/YYYY)</SelectItem>
+                                            <SelectItem value="month">Month & Year</SelectItem>
+                                            <SelectItem value="year">Year Only</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="space-y-2">
                                     <Label htmlFor="date" className="text-xs font-black uppercase text-slate-400">Completion Date</Label>
-                                    <Input
-                                        id="date"
-                                        type="date"
-                                        value={formData.completionDate ? formData.completionDate.split('T')[0] : ''}
-                                        onChange={(e) => setFormData({ ...formData, completionDate: e.target.value })}
-                                        required
-                                        className="h-12 rounded-xl"
-                                    />
+                                    {formData.dateFormat === 'year' ? (
+                                        <Input
+                                            id="date"
+                                            type="number"
+                                            min="1990"
+                                            max="2099"
+                                            placeholder="YYYY"
+                                            value={formData.completionDate ? formData.completionDate.split('-')[0] : ''}
+                                            onChange={(e) => {
+                                                const year = e.target.value;
+                                                // Allow clearing
+                                                if (!year) {
+                                                    setFormData({ ...formData, completionDate: '' });
+                                                    return;
+                                                }
+                                                // Update immediately so input reflects typing
+                                                setFormData({ ...formData, completionDate: `${year}-01-01` });
+                                            }}
+                                            className="h-12 rounded-xl"
+                                        />
+                                    ) : formData.dateFormat === 'month' ? (
+                                        <Input
+                                            id="date"
+                                            type="month"
+                                            value={formData.completionDate ? formData.completionDate.substring(0, 7) : ''}
+                                            onChange={(e) => setFormData({ ...formData, completionDate: `${e.target.value}-01` })}
+                                            className="h-12 rounded-xl"
+                                        />
+                                    ) : (
+                                        <Input
+                                            id="date"
+                                            type="date"
+                                            value={formData.completionDate ? formData.completionDate.split('T')[0] : ''}
+                                            onChange={(e) => setFormData({ ...formData, completionDate: e.target.value })}
+                                            className="h-12 rounded-xl"
+                                        />
+                                    )}
                                 </div>
                             </div>
 
                             <div className="space-y-2">
                                 <Label htmlFor="gallery" className="text-xs font-black uppercase text-slate-400">
-                                    Project Images
+                                    Project Images <span className="text-red-500">*</span>
                                 </Label>
                                 <div className="relative">
                                     <Input
@@ -562,6 +637,28 @@ const WorksGallery = () => {
                     )}
                 </div>
             )}
+
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <AlertDialogContent className="rounded-2xl">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="font-bold text-xl">Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-slate-500">
+                            This action cannot be undone. This will permanently delete the project
+                            {projectToDelete?.title && <span className="font-bold text-slate-700"> "{projectToDelete.title}" </span>}
+                            and remove its data from our servers.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={confirmDelete}
+                            className="bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold"
+                        >
+                            Delete Project
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </AdminLayout>
     );
 };
