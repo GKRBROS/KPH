@@ -41,7 +41,7 @@ const ServicesSection = () => {
         {
             title: "Paint Consultation",
             subtitle: "EXPERT GUIDANCE",
-            description: "Expert guidance on color selection, finishes, material choice, and maintenance to help you achieve the perfect look and longlasting results.",
+            description: "Expert guidance on color selection, finishes, material choice, and maintenance to help you achieve the perfect look and longlasting results. We have a colour studio to tint over 2,500 Asian Paints shades for customers to choose from.",
             image: "/images/paint_consultation.png",
             icon: Palette
         }
