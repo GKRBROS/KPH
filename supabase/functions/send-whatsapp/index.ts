@@ -118,15 +118,7 @@ We have received your request for ${service}. Please find your enquiry summary a
             }
         }
 
-        // Send to customer with template
-        console.log("Attempting to send to Customer...")
-        console.log("Customer phone before sending:", phone)
-        if (CUSTOMER_TEMPLATE_SID) {
-            results.push(await sendWhatsApp(phone, customerMessage, "Customer", CUSTOMER_TEMPLATE_SID, [name, service]))
-        } else {
-            results.push(await sendWhatsApp(phone, customerMessage, "Customer"))
-        }
-        console.log("Customer message sent successfully!")
+        // Customer messaging intentionally disabled
 
         return new Response(JSON.stringify({ success: true, results }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },

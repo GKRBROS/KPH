@@ -83,9 +83,11 @@ const ContactForm = () => {
     const onSubmit = async (values: FormValues) => {
         try {
             setLoading(true);
+            console.log("Submitting ContactForm...");
             const imageUrls: string[] = [];
 
-            for (const file of imageFiles) {
+            // 1. Upload Images in Parallel
+            const uploadPromises = imageFiles.map(async (file) => {
                 const ext = file.name.split(".").pop();
                 const path = `enquiry_attachments/${crypto.randomUUID()}.${ext}`;
 
@@ -97,10 +99,45 @@ const ContactForm = () => {
                     const { data } = supabase.storage
                         .from("enquiry-attachments")
                         .getPublicUrl(path);
-                    imageUrls.push(data.publicUrl);
+                    return data.publicUrl;
                 }
-            }
+                return null;
+            });
 
+            const uploadedUrls = await Promise.all(uploadPromises);
+            imageUrls.push(...uploadedUrls.filter((url): url is string => url !== null));
+
+            // 2. Generate PDF
+            const { jsPDF } = await import("jspdf");
+            const doc = new jsPDF();
+            doc.setFontSize(22);
+            doc.text("KPH - Painting Enquiry", 20, 20);
+            doc.setFontSize(12);
+            doc.text(`Name: ${values.name}`, 20, 40);
+            doc.text(`Phone: ${values.phone}`, 20, 50);
+            doc.text(`Email: ${values.email || "N/A"}`, 20, 60);
+            doc.text(`District: ${values.district}`, 20, 70);
+            doc.text(`Service: ${values.interestedIn}`, 20, 80);
+            doc.text(`Sq.Ft: ${values.sqft || "N/A"}`, 20, 90);
+            doc.text("Project Details:", 20, 100);
+            doc.text(values.projectDetails || "N/A", 20, 110, { maxWidth: 170 });
+            
+            const pdfBlob = doc.output("blob");
+            const sanitizedName = values.name.replace(/[^a-z0-9]/gi, '').toLowerCase();
+            const date = new Date();
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('default', { month: 'short' }).toLowerCase();
+            const year = date.getFullYear();
+            const pdfPath = `enquiry-pdfs/${sanitizedName}_enquiry_${day}${month}${year}.pdf`;
+            await supabase.storage.from("enquiry-pdfs").upload(pdfPath, pdfBlob, {
+                contentType: "application/pdf",
+                cacheControl: "3600",
+                upsert: false
+            });
+            const { data: pdfData } = supabase.storage.from("enquiry-pdfs").getPublicUrl(pdfPath);
+            const pdfUrl = pdfData.publicUrl;
+
+            // 3. Save to Database
             await supabase.from("enquiries").insert({
                 name: values.name,
                 phone: values.phone,
@@ -110,25 +147,33 @@ const ContactForm = () => {
                 sqft: values.sqft || null,
                 project_details: values.projectDetails || null,
                 image_urls: imageUrls,
+                pdf_url: pdfUrl,
                 status: "New",
             });
 
-            const message = `*New Painting Enquiry*
-Name: ${values.name}
-Phone: ${values.phone}
-Service: ${values.interestedIn}
-District: ${values.district}
-Sq.Ft: ${values.sqft || "N/A"}
-Details: ${values.projectDetails || "N/A"}`;
+            // 4. Send WhatsApp via Edge Function (The Trigger)
+            const { error: functionError } = await supabase.functions.invoke('send-whatsapp', {
+                body: { name: values.name, phone: values.phone, service: values.interestedIn, pdfUrl }
+            });
 
-            window.open(
-                `https://wa.me/919446194178?text=${encodeURIComponent(message)}`,
-                "_blank"
-            );
+            if (functionError) {
+                console.error("WhatsApp Error:", functionError);
+            }
 
-            toast.success("Enquiry sent successfully!");
-            form.reset();
+            toast.success("Enquiry successful! Our experts will contact you soon.");
+            form.reset({
+                name: "",
+                phone: "",
+                email: "",
+                district: "",
+                interestedIn: "",
+                sqft: "",
+                projectDetails: ""
+            });
             setImageFiles([]);
+            setTimeout(() => {
+                window.location.reload();
+            }, 4000); // 4 second delay to allow toast to be readable
         } catch (err: any) {
             toast.error(err.message || "Something went wrong");
         } finally {
@@ -251,7 +296,7 @@ Details: ${values.projectDetails || "N/A"}`;
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="text-xs font-bold uppercase tracking-widest text-slate-900">Service Required</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <Select onValueChange={field.onChange} value={field.value || ""}>
                                                     <FormControl>
                                                         <SelectTrigger className="h-14 bg-white border border-slate-900 rounded-none focus:ring-1 focus:ring-black text-slate-900 data-[placeholder]:text-slate-400 hover:bg-slate-50 transition-colors">
                                                             <SelectValue placeholder="Select Service" />

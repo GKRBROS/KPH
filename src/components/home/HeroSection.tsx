@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import QuickContactForm from "./QuickContactForm";
+import { QuickContactForm } from "@/components/home/QuickContactForm";
 import {
   ShieldCheck,
   Sparkles,
@@ -15,7 +15,6 @@ const HeroSection = () => {
     <section id="hero" className="relative lg:min-h-[85vh] min-h-[500px] flex flex-col justify-between overflow-hidden bg-white">
 
       <div className="absolute inset-0 z-0">
-        {/* Background Image with Royal Gradient Overlay */}
         {/* Background Image with Royal Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-100/90 via-purple-50/80 to-slate-100/40 z-10 mix-blend-overlay" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-purple-100/30 via-transparent to-transparent z-10" />
@@ -37,8 +36,6 @@ const HeroSection = () => {
           {/* LEFT CONTENT: Simple & Catchy */}
           <div className="w-full lg:w-[60%] space-y-8 animate-fade-in text-center lg:text-left pt-4 lg:pt-0">
             <div className="space-y-6 relative z-20">
-              {/* Badge removed as per user request */}
-
               {/* High-Contrast Architectural Headline */}
               <h1 className="flex flex-col text-[10vw] sm:text-6xl lg:text-7xl font-serif font-black leading-[0.9] tracking-tighter text-black uppercase">
                 <span className="tracking-tight">THE PAINT</span>
@@ -98,19 +95,17 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* RIGHT CONTENT: Contact Form */}
+          {/* RIGHT CONTENT: Quick Contact Form */}
           <div className="w-full lg:w-auto shrink-0 flex justify-center lg:justify-end relative mt-8 lg:mt-0">
             {/* Decorative glow behind form */}
             <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full opacity-40 animate-pulse hidden lg:block" />
             <div className="relative z-10 w-full max-w-[90vw] sm:max-w-md">
-              <QuickContactForm />
+              <QuickContactForm isHero />
             </div>
           </div>
 
         </div>
       </div>
-
-      {/* Bottom bar removed as per user request */}
 
     </section >
   );
