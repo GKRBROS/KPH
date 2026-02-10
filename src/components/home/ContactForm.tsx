@@ -154,15 +154,14 @@ const ContactForm = () => {
             doc.setFontSize(12);
             doc.text(`Name: ${values.name}`, 20, 40);
             doc.text(`Phone: ${values.phone}`, 20, 50);
-            doc.text(`Email: ${values.email || "N/A"}`, 20, 60);
-            doc.text(`District: ${values.district}`, 20, 70);
-            doc.text(`Service: ${values.interestedIn}`, 20, 80);
-            doc.text(`Sq.Ft: ${values.sqft || "N/A"}`, 20, 90);
-            doc.text("Project Details:", 20, 100);
-            doc.text(values.projectDetails || "N/A", 20, 110, { maxWidth: 170 });
+            doc.text(`District: ${values.district}`, 20, 60);
+            doc.text(`Service: ${values.interestedIn}`, 20, 70);
+            doc.text(`Sq.Ft: ${values.sqft || "N/A"}`, 20, 80);
+            doc.text("Project Details:", 20, 90);
+            doc.text(values.projectDetails || "N/A", 20, 100, { maxWidth: 170 });
             
             // Add Images to PDF
-            let yPos = 140; // Start below text
+            let yPos = 130; // Start below text
             
             if (imageFiles.length > 0) {
                 doc.addPage();
