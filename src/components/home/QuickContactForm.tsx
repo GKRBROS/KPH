@@ -112,65 +112,24 @@ export const QuickContactForm = ({ isHero = false }: QuickContactFormProps) => {
             const uploadedUrls = await Promise.all(uploadPromises);
             imageUrls.push(...uploadedUrls.filter((url): url is string => url !== null));
 
-            // 2. Generate PDF
-            const { jsPDF } = await import("jspdf");
-            const doc = new jsPDF();
-            doc.setFontSize(22);
-            doc.setTextColor(0, 0, 0);
-            doc.text("KPH - Painting Enquiry", 20, 20);
-            doc.setFontSize(12);
-            doc.text("----------------------------------------", 20, 30);
-            doc.text(`Name: ${values.name}`, 20, 40);
-            doc.text(`Phone: ${values.phone}`, 20, 50);
-            doc.text(`Email: ${values.email || "N/A"}`, 20, 60);
-            doc.text(`District: ${values.district}`, 20, 70);
-            doc.text(`Service: ${values.interestedIn}`, 20, 80);
-            doc.text(`Sq.Ft: ${values.sqft || "N/A"}`, 20, 90);
-            doc.text("Project Details:", 20, 100);
-            doc.text(values.projectDetails || "No additional details provided.", 20, 110, { maxWidth: 170 });
-            
-            if (imageFiles.length > 0) {
-                doc.addPage();
-                doc.setFontSize(16);
-                doc.text("Project Images", 20, 20);
-                let yPos = 30, xPos = 20;
-                for (let i = 0; i < imageFiles.length; i++) {
-                    try {
-                        const base64 = await toBase64(imageFiles[i]);
-                        doc.addImage(base64, "JPEG", xPos, yPos, 80, 60);
-                        xPos += 90;
-                        if (xPos > 120) { xPos = 20; yPos += 70; }
-                        if (yPos > 240 && i < imageFiles.length - 1) { doc.addPage(); yPos = 20; xPos = 20; }
-                    } catch (err) { console.error("PDF Image Error:", err); }
-                }
-            }
-            
-            const pdfBlob = doc.output("blob");
-            const sanitizedName = values.name.replace(/[^a-z0-9]/gi, '').toLowerCase();
-            const date = new Date();
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = date.toLocaleString('default', { month: 'short' }).toLowerCase();
-            const year = date.getFullYear();
-            const pdfPath = `enquiry-pdfs/${sanitizedName}_enquiry_${day}${month}${year}.pdf`;
-            await supabase.storage.from("enquiry-pdfs").upload(pdfPath, pdfBlob, {
-                contentType: "application/pdf",
-                cacheControl: "3600",
-                upsert: false
-            });
-            const { data } = supabase.storage.from("enquiry-pdfs").getPublicUrl(pdfPath);
-            const pdfUrl = data.publicUrl;
+            // 2. Save to Database
+            const { data: enquiryData, error: dbError } = await supabase.from("enquiries").insert({
+                name: values.name, 
+                phone: values.phone, 
+                email: values.email || null,
+                district: values.district, 
+                interested_in: values.interestedIn,
+                sqft: values.sqft || null, 
+                project_details: values.projectDetails || null,
+                image_urls: imageUrls, 
+                status: "New",
+            }).select().single();
 
-            // 3. Save to Database
-            await supabase.from("enquiries").insert({
-                name: values.name, phone: values.phone, email: values.email || null,
-                district: values.district, interested_in: values.interestedIn,
-                sqft: values.sqft || null, project_details: values.projectDetails || null,
-                image_urls: imageUrls, pdf_url: pdfUrl, status: "New",
-            });
+            if (dbError) throw dbError;
 
-            // 4. Send WhatsApp via Edge Function
+            // 3. Send WhatsApp via Edge Function (Handles PDF generation & Messaging)
             const { error: functionError } = await supabase.functions.invoke('send-whatsapp', {
-                body: { name: values.name, phone: values.phone, service: values.interestedIn, pdfUrl }
+                body: { enquiry_id: enquiryData.id }
             });
 
             if (functionError) {
