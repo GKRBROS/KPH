@@ -31,6 +31,7 @@ import {
     ArrowRight,
 } from "lucide-react";
 import { DistrictSelect } from "@/components/ui/district-select";
+import { jsPDF } from "jspdf";
 
 /* -------------------- Schema -------------------- */
 const formSchema = z.object({
@@ -147,7 +148,6 @@ const ContactForm = () => {
             imageUrls.push(...uploadedUrls.filter((url): url is string => url !== null));
 
             // 2. Generate PDF
-            const { jsPDF } = await import("jspdf");
             const doc = new jsPDF();
             doc.setFontSize(22);
             doc.text("KPH - Painting Enquiry", 20, 20);
