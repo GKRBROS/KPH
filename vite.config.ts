@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => ({
           vendor: ['react', 'react-dom', 'react-router-dom'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-slot', 'lucide-react', 'class-variance-authority', 'clsx', 'tailwind-merge'],
           charts: ['recharts'],
-          forms: ['@hookform/resolvers', 'react-hook-form', 'zod'],
+          forms: ['@hookform/resolvers', 'react-hook-form', 'zod', 'jspdf'],
           utils: ['date-fns', '@tanstack/react-query']
         },
         chunkFileNames: (chunkInfo) => {
