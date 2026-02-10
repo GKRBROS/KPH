@@ -45,6 +45,16 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+/* -------------------- Helper -------------------- */
+const toBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+    });
+};
+
 /* -------------------- Component -------------------- */
 const ContactForm = () => {
     const [loading, setLoading] = useState(false);
@@ -122,6 +132,34 @@ const ContactForm = () => {
             doc.text("Project Details:", 20, 100);
             doc.text(values.projectDetails || "N/A", 20, 110, { maxWidth: 170 });
             
+            // Add Images to PDF
+            let yPos = 140; // Start below text
+            
+            if (imageFiles.length > 0) {
+                doc.addPage();
+                doc.text("Project Images:", 20, 20);
+                yPos = 30;
+
+                for (const file of imageFiles) {
+                    try {
+                        const base64 = await toBase64(file);
+                        const ext = file.name.split('.').pop()?.toUpperCase() || 'JPEG';
+                        
+                        // Check if we need a new page (approx 100mm height per image)
+                        if (yPos + 100 > 280) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
+
+                        // Add image (x, y, width, height) - adjusting to fit A4 width approx
+                        doc.addImage(base64, ext, 20, yPos, 170, 100);
+                        yPos += 110; // Space for next image
+                    } catch (err) {
+                        console.error("Error adding image to PDF:", err);
+                    }
+                }
+            }
+
             const pdfBlob = doc.output("blob");
             const sanitizedName = values.name.replace(/[^a-z0-9]/gi, '').toLowerCase();
             const date = new Date();
