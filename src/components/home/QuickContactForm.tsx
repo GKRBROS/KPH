@@ -112,8 +112,39 @@ export const QuickContactForm = ({ isHero = false }: QuickContactFormProps) => {
             const uploadedUrls = await Promise.all(uploadPromises);
             imageUrls.push(...uploadedUrls.filter((url): url is string => url !== null));
 
-            // 2. Save to Database
-            const { data: enquiryData, error: dbError } = await supabase.from("enquiries").insert({
+            // 2. Generate PDF
+            const { jsPDF } = await import("jspdf");
+            const doc = new jsPDF();
+            doc.setFontSize(22);
+            doc.text("KPH - Painting Enquiry", 20, 20);
+            doc.setFontSize(12);
+            doc.text(`Name: ${values.name}`, 20, 40);
+            doc.text(`Phone: ${values.phone}`, 20, 50);
+            doc.text(`Email: ${values.email || "N/A"}`, 20, 60);
+            doc.text(`District: ${values.district}`, 20, 70);
+            doc.text(`Service: ${values.interestedIn}`, 20, 80);
+            doc.text(`Sq.Ft: ${values.sqft || "N/A"}`, 20, 90);
+            doc.text("Project Details:", 20, 100);
+            doc.text(values.projectDetails || "N/A", 20, 110, { maxWidth: 170 });
+            
+            const pdfBlob = doc.output("blob");
+            const sanitizedName = values.name.replace(/[^a-z0-9]/gi, '').toLowerCase();
+            const date = new Date();
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('default', { month: 'short' }).toLowerCase();
+            const year = date.getFullYear();
+            const pdfPath = `enquiry-pdfs/${sanitizedName}_enquiry_${day}${month}${year}.pdf`;
+            
+            await supabase.storage.from("enquiry-pdfs").upload(pdfPath, pdfBlob, {
+                contentType: "application/pdf",
+                cacheControl: "3600",
+                upsert: false
+            });
+            const { data: pdfData } = supabase.storage.from("enquiry-pdfs").getPublicUrl(pdfPath);
+            const pdfUrl = pdfData.publicUrl;
+
+            // 3. Save to Database
+            const { error: dbError } = await supabase.from("enquiries").insert({
                 name: values.name, 
                 phone: values.phone, 
                 email: values.email || null,
@@ -121,15 +152,16 @@ export const QuickContactForm = ({ isHero = false }: QuickContactFormProps) => {
                 interested_in: values.interestedIn,
                 sqft: values.sqft || null, 
                 project_details: values.projectDetails || null,
-                image_urls: imageUrls, 
+                image_urls: imageUrls,
+                pdf_url: pdfUrl,
                 status: "New",
-            }).select().single();
+            });
 
             if (dbError) throw dbError;
 
-            // 3. Send WhatsApp via Edge Function (Handles PDF generation & Messaging)
+            // 4. Send WhatsApp via Edge Function
             const { error: functionError } = await supabase.functions.invoke('send-whatsapp', {
-                body: { enquiry_id: enquiryData.id }
+                body: { name: values.name, phone: values.phone, service: values.interestedIn, pdfUrl }
             });
 
             if (functionError) {
