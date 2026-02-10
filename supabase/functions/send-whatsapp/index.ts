@@ -221,7 +221,7 @@ Deno.serve(async (req) => {
         const WATTI_ENDPOINT = Deno.env.get('WATTI_API_ENDPOINT')?.replace(/\/$/, "");
         const ADMIN_1 = Deno.env.get('META_ADMIN_1_WHATSAPP') || Deno.env.get('ADMIN_1_WHATSAPP');
         const ADMIN_2 = Deno.env.get('META_ADMIN_2_WHATSAPP') || Deno.env.get('ADMIN_2_WHATSAPP');
-        const TEMPLATE_NAME = Deno.env.get('META_TEMPLATE_NAME') || Deno.env.get('WATTI_TEMPLATE_NAME') || 'admin_new_enquiry';
+        const TEMPLATE_NAME = Deno.env.get('META_TEMPLATE_NAME') || Deno.env.get('WATTI_TEMPLATE_NAME') || 'enquiry_notification_test';
 
         if (!WATTI_API_KEY || !WATTI_ENDPOINT) {
             console.log("Watti not configured, skipping WhatsApp");
