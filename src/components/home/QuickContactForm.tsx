@@ -46,12 +46,41 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 /* -------------------- Helper -------------------- */
-const toBase64 = (file: File): Promise<string> => {
+const processImageForPdf = (file: File): Promise<{ dataUrl: string; width: number; height: number }> => {
     return new Promise((resolve, reject) => {
+        const img = new Image();
         const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
+        
+        reader.onload = (e) => {
+            img.src = e.target?.result as string;
+        };
+        
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            // Keep original dimensions
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+                reject(new Error('Could not get canvas context'));
+                return;
+            }
+            
+            ctx.drawImage(img, 0, 0);
+            
+            // Reduce quality to 0.7 (30% reduction), keep image/jpeg for compression
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            
+            resolve({
+                dataUrl,
+                width: img.width,
+                height: img.height
+            });
+        };
+        
         reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
     });
 };
 
@@ -137,17 +166,22 @@ export const QuickContactForm = ({ isHero = false }: QuickContactFormProps) => {
 
                 for (const file of imageFiles) {
                     try {
-                        const base64 = await toBase64(file);
-                        const ext = file.name.split('.').pop()?.toUpperCase() || 'JPEG';
+                        const { dataUrl, width, height } = await processImageForPdf(file);
+                        const ext = 'JPEG'; 
+                        
+                        // Calculate dimensions to fit PDF width (170mm) while maintaining aspect ratio
+                        const maxWidth = 170;
+                        const ratio = width / height;
+                        const pdfHeight = maxWidth / ratio;
                         
                         // Check if we need a new page
-                        if (yPos + 100 > 280) {
+                        if (yPos + pdfHeight > 280) {
                             doc.addPage();
                             yPos = 20;
                         }
 
-                        doc.addImage(base64, ext, 20, yPos, 170, 100);
-                        yPos += 110;
+                        doc.addImage(dataUrl, ext, 20, yPos, maxWidth, pdfHeight);
+                        yPos += pdfHeight + 10;
                     } catch (err) {
                         console.error("Error adding image to PDF:", err);
                     }
