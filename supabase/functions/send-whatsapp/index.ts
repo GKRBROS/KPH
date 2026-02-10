@@ -219,9 +219,9 @@ Deno.serve(async (req) => {
         // 4. Send WhatsApp via Watti
         const WATTI_API_KEY = Deno.env.get('WATTI_BEARER_TOKEN') || Deno.env.get('WATTI_API_KEY');
         const WATTI_ENDPOINT = Deno.env.get('WATTI_API_ENDPOINT')?.replace(/\/$/, "");
-        const ADMIN_1 = Deno.env.get('META_ADMIN_1_WHATSAPP') || Deno.env.get('ADMIN_1_WHATSAPP');
-        const ADMIN_2 = Deno.env.get('META_ADMIN_2_WHATSAPP') || Deno.env.get('ADMIN_2_WHATSAPP');
-        const TEMPLATE_NAME = Deno.env.get('META_TEMPLATE_NAME') || Deno.env.get('WATTI_TEMPLATE_NAME') || 'enquiry_notification_test';
+        const ADMIN_1 = Deno.env.get('WATTI_ADMIN_1_WHATSAPP') || Deno.env.get('META_ADMIN_1_WHATSAPP') || Deno.env.get('ADMIN_1_WHATSAPP');
+        const ADMIN_2 = Deno.env.get('WATTI_ADMIN_2_WHATSAPP') || Deno.env.get('META_ADMIN_2_WHATSAPP') || Deno.env.get('ADMIN_2_WHATSAPP');
+        const TEMPLATE_NAME = Deno.env.get('WATTI_TEMPLATE_NAME') || Deno.env.get('META_TEMPLATE_NAME') || 'enquiry_notification_test';
 
         if (!WATTI_API_KEY || !WATTI_ENDPOINT) {
             console.log("Watti not configured, skipping WhatsApp");
@@ -244,17 +244,20 @@ Deno.serve(async (req) => {
         const results = await Promise.allSettled(
             adminNumbers.map(async (phone) => {
                 let formattedPhone = phone!.trim().replace(/^\+/, "");
-                const url = `${WATTI_ENDPOINT}/api/v1/sendTemplateMessage?whatsappNumber=${encodeURIComponent(formattedPhone)}`;
+
+                // Using Watti v2 API structure
+                const url = `${WATTI_ENDPOINT}/api/v2/sendTemplateMessage`;
 
                 const res = await fetch(url, {
                     method: "POST",
                     headers: {
-                        Authorization: WATTI_API_KEY,
+                        Authorization: `Bearer ${WATTI_API_KEY}`,
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
                         template_name: TEMPLATE_NAME,
                         broadcast_name: "enquiry_" + (enquiry_id?.slice(0, 8) || Date.now()),
+                        whatsappNumber: formattedPhone,
                         parameters,
                     }),
                 });
