@@ -29,7 +29,6 @@ serve(async (req: Request) => {
 
         const ADMIN_1_WHATSAPP = Deno.env.get('WATTI_ADMIN_1_WHATSAPP')
         const ADMIN_2_WHATSAPP = Deno.env.get('WATTI_ADMIN_2_WHATSAPP')
-        const TEST_ADMIN_WHATSAPP = Deno.env.get('WATTI_TEST_ADMIN_WHATSAPP')
         
         // IMPORTANT: This name must match exactly what you created in WATI
         const TEMPLATE_NAME = 'admin_enquiry'
@@ -107,9 +106,6 @@ serve(async (req: Request) => {
         }
         if (ADMIN_2_WHATSAPP) {
             results.push(await sendWattiMessage(ADMIN_2_WHATSAPP, "Admin 2"))
-        }
-        if (TEST_ADMIN_WHATSAPP) {
-            results.push(await sendWattiMessage(TEST_ADMIN_WHATSAPP, "Test Admin"))
         }
 
         return new Response(JSON.stringify({ success: true, results }), {
